@@ -1253,7 +1253,7 @@ jdbc.passwd=123456
         <property name="dataSource" ref="dataSource"/>
         <!-- 可结合全局配置 -->
         <!--<property name="configLocation" value="classpath:mybatis-config.xml"/>-->
-        <!-- 指定mapper映射文件，名字可与mapper接口名不同 -->
+        <!-- 指定mapper映射文件wei'z -->
         <property name="mapperLocations" value="classpath:mapper.xml"/>
     </bean>
     <!-- 为了解决MapperFactoryBean繁琐而生的，有了MapperScannerConfigurer就不需要
