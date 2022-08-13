@@ -331,7 +331,7 @@ spring提供的容器也称为ioc容器。
 
 # IoC的实现与使用
 
-## 概述
+## 入门
 
 1. 类的依赖关系：`use-a`，一个类的实现需要另一个类的协助。
 2. 依赖注入（DI）：是实现IoC的一种方式，依赖注入有两种形式：构造器注入、setter注入。（依赖注入的本质就是装配，装配是依赖注入的一种具体行为）
@@ -339,11 +339,10 @@ spring提供的容器也称为ioc容器。
 
 **自动装配的几种方式：**（byName（通过名字匹配）、byType（通过全限类名匹配）、constructor（通过构造器参数去匹配）、autodetect（自动检索-自动装配））
 
-1. 基于XML配置文件。（在XML中声明装配方式）
-2. 基于注解。（使用注解来声明装配方式）
-3. bean发现机制与自动装配。（）
+1. 基于XML配置文件。（在XML中声明通过哪种方式自动装配）
+2. 基于注解。（使用注解来声明依赖注入）
 
-## 第一个spring程序
+### 第一个spring程序
 
 1. 依赖：
 
@@ -402,7 +401,7 @@ spring提供的容器也称为ioc容器。
 
 
 
-## 应用上下文简单说明
+### 应用上下文简单说明
 
 对象都存在于spring容器（IoC容器）里，spring容器归为两种类型：bean工厂、应用上下文；较常使用的是应用上下文。对象是由spring容器创建的，我们可以使用xml配置文件、JavaConfig、注解来配置spring容器从而创建特定的对象（bean）。
 
@@ -430,13 +429,13 @@ public static void main(String[] args){
 | ------------------------------------- | ------------------------------------------------------------ |
 | AnnotationConfigApplicationContext    | 从一个或多个Java配置类中加载spring应用上下文                 |
 | AnnotationConfigWebApplicationContext | 从一个或多个Java配置类中加载spring web应用上下文             |
-| ClassPathXmlConfigApplicationContext  | 从类路径下一个或多个xml配置文件加载上下文定义，把应用上下文定义文件作为类资源 |
+| ClassPathXmlApplicationContext        | 从类路径下一个或多个xml配置文件加载上下文定义，把应用上下文定义文件作为类资源 |
 | XmlWebApplicationContext              | 从web应用下的一个或多个xml配置文件加载上下文定义             |
 | FileSystemXmlApplicationContext       | 从文件系统下的一个或多个xml配置文件加载上下文定义            |
 
 
 
-## beans.xml简单说明
+### beans.xml简单说明
 
 **关于beans.xml文件：**
 
@@ -451,16 +450,16 @@ beans.xml文件是应用上下文的一个配置文件（文件名自定义）�
     <!-- 整合其他的配置文件 -->
     <import resource="beans1.xml"/>
     <!-- 声明将要创建的对象的配置信息 -->
-    <bean id = "" class= "" name ="" scope="">
+    <bean id = "user" class= "" name ="" scope="">
     </bean>
-    <!-- alias就是别名的意思，为指定的bean对象取一个别名 -->
-    <alias name="user" alias="xxx"/>
     <!--
  		id: 定义对象名
  		class: 创建对象的类型所在的全限路径（包名+类名）
  		name: 创建别名，可以命名多个，逗号隔开
  		scope：声明作用域，默认为单例模式
 	--> 
+    <!-- alias就是别名的意思，为指定的bean对象取一个别名，name指bean的id -->
+    <alias name="user" alias="xxx"/>
 </beans>
 ```
 
@@ -507,7 +506,7 @@ Spring提供了常用的两种依赖注入方式：setter注入（Setter Injecti
 </bean>
 ```
 
-通过参数类型注入属性，不建议使用！如果参数中有多个同一类型会出错（?）：
+通过参数类型注入属性，不建议使用！如果参数中有多个同一类型会出错（不知道将属性往哪放）：
 
 ```xml
 <bean id = "user3" class="com.lsl.pojo.User">
@@ -522,7 +521,7 @@ Spring提供了常用的两种依赖注入方式：setter注入（Setter Injecti
 
 setter方式注入就是利用set方法来进行注入的，注意通过set方法进行注入的都需要先利用类中的无参构造器来构建好对象，然后才通过set方法注入。（无参构造器必须存在）
 
-1.基本数据类型和String类型的普通值的引入：
+1、基本数据类型和String类型的普通值的引入：
 
 ```xml
 <bean id = "xxx" class = "xxx.xxx.Xxx">
@@ -535,7 +534,7 @@ setter方式注入就是利用set方法来进行注入的，注意通过set方�
 -->
 ```
 
-2.自定义类的注入，自定义类都使用bean来创建对象至容器里，该类注入也叫bean注入
+2、自定义类的注入，自定义类都使用bean来创建对象至容器里，该类注入也叫bean注入：
 
 ```xml
 <bean id="address" class="com.lsl.pojo.Address"/>
@@ -546,7 +545,7 @@ setter方式注入就是利用set方法来进行注入的，注意通过set方�
 </bean>
 ```
 
-3.数组的注入
+3、数组的注入：
 
 ```xml
 <bean id = "xxx" class = "xxx.xxx.Xxx">
@@ -563,7 +562,7 @@ setter方式注入就是利用set方法来进行注入的，注意通过set方�
 </bean>
 ```
 
-5.声明为List集合的注入（实现类如何注入？）
+4、声明为List集合的注入（声明为List实现类的如何注入？）：
 
 ```xml
 <property name="hobby">
@@ -588,7 +587,7 @@ setter方式注入就是利用set方法来进行注入的，注意通过set方�
 </property>
 ```
 
-6.声明为Map集合的注入
+5、声明为Map集合的注入：
 
 ```xml
 <property name="idcard">
@@ -599,7 +598,7 @@ setter方式注入就是利用set方法来进行注入的，注意通过set方�
 </property>
 ```
 
-7.声明为Set集合的注入
+7.声明为Set集合的注入：
 
 ```xml
 <property name="qq">
@@ -610,7 +609,7 @@ setter方式注入就是利用set方法来进行注入的，注意通过set方�
 </property>
 ```
 
-8.注入null值或空字符串
+6、注入null值或空字符串：
 
 ```xml
 <!-- 注入null -->
@@ -621,7 +620,7 @@ setter方式注入就是利用set方法来进行注入的，注意通过set方�
 <property name="xx" value=""></property> 
 ```
 
-9.Properties配置类类型
+7、Properties配置类类型：
 
 ```xml
 <property name="properties">
@@ -712,40 +711,40 @@ public class CatFactory {
 
 JavaConfig就是**使用注解来描述Bean配置**的组件；JavaConfig是Spring的一个子项目，Spring4之后成为一个核心功能，在SpringBoot中常见。可将JavaConfig（Java配置类）看做是和bean.xml一样的配置文件，用来配置bean、装配等。配置类基本使用流程如下：
 
-1. 创建配置类：
+1、创建配置类：
 
-   ```java
-   // 代表配置类，相当于beans.xml
-   @Configuration 
-   // 扫描包，可选项，如果不指定扫描包路径，会默认扫描与配置类相同的包及子包
-   @ComponentScan("com.lsl.pojo")  
-   @Import(LslConfig2.class)       // 合并配置类，可选项
-   public class LSLConfig {......}
-   ```
+```java
+// 代表配置类，相当于beans.xml
+@Configuration 
+// 组件扫描——使注解生效，可选项，如果不指定扫描的包路径，会默认扫描与配置类相同的包及子包
+@ComponentScan("com.lsl.pojo")  
+@Import(LslConfig2.class)       // 合并配置类，可选项
+public class LSLConfig {......}
+```
 
-2. 声明bean：默认情况下，bean的ID与带有@Bean的方法的方法名一致，但可以通过name属性指定：
+2、声明bean：默认情况下，bean的ID与带有@Bean的方法的方法名一致，但可以通过name属性指定：
 
-   ```java
-   public class LSLConfig {
-       @Bean(name="xxx")
-       public xxx setXxx() {......}
-       @Bean(name="mycat")  // 创建的bean的id为mycat
-       public Cat setCat() {
-           return new Cat();
-       }
-   }
-   // @Bean注解将会告诉spring-该方法会返回一个对象，该对象要注册为spring应用上下文的bean
-   // 默认的bean的id为方法名，例如上面的setCat就是bean的默认id（如果没有指定name的话）
-   // name属性可以设置新的beanID，设置了name后默认的不再生效，bean的生产是单例的
-   ```
+```java
+public class LSLConfig {
+    @Bean(name="xxx")
+    public xxx setXxx() {......}
+    @Bean(name="mycat")  // 创建的bean的id为mycat
+    public Cat setCat() {
+        return new Cat();
+    }
+}
+// @Bean注解将会告诉spring-该方法会返回一个对象，该对象要注册为spring应用上下文的bean
+// 默认的bean的id为方法名，例如上面的setCat就是bean的默认id（如果没有指定name的话）
+// name属性可以设置新的beanID，设置了name后默认的不再生效，bean的生产是单例的
+```
 
-3. 配置好后使用其中的bean：
+3、配置好后使用其中的bean：
 
-   ```java
-   //完全使用了配置类，就只能通过ApplicationContext上下文来获取容器，通过配置类的class对象加载
-   ApplicationContext context1 = new AnnotationConfigApplicationContext(LslConfigTest.class);
-   User user1 = (User) context1.getBean("getUser");  // 相当于content1.getbean("xxx",Xxx.class);
-   ```
+```java
+//完全使用了配置类，就只能通过ApplicationContext上下文来获取容器，通过配置类的class对象加载
+ApplicationContext context1 = new AnnotationConfigApplicationContext(LslConfigTest.class);
+User user1 = (User) context1.getBean("getUser");  // 相当于content1.getbean("xxx",Xxx.class);
+```
 
 ## 自动装配
 
@@ -753,13 +752,18 @@ JavaConfig就是**使用注解来描述Bean配置**的组件；JavaConfig是Spri
 
 ### 纯xml配置自动装配
 
-自动装配：（三个过程：1.spring容器中有相应的bean，2.找到要注入的bean，3.spring自动寻找并为指定bean注入bean）
+自动装配：（三个过程：1.spring容器中有相应的bean，2.找到要注入的bean，3.spring自动寻找并为指定bean的属性注入bean）
 
-使用bean的自动装配属性：（autowire，用来指定spring寻找bean的方式）
+使用xml中bean标签的自动装配属性：（autowire，用来指定spring寻找bean的方式）
 
-1. `autowire="byName";`：在容器上下文中寻找到和**setXxx方法**后面的值(xxx)对应的beanID后进行装配。
-2. `autowire="byType";`：在容器上下文中寻找到和自己对象**属性类型**相同的bean后进行装配。
-3. `autowire="constructor"`：spring会找到当前bean所在类中所有的构造方法，然后将这些构造方法进行排序（先按修饰符进行排序，public的在前面，其他的在后面，如果修饰符一样的，会按照构造函数参数数量倒叙，也就是采用贪婪的模式进行匹配，spring容器会尽量多注入一些需要的对象）得到一个构造函数列表，会轮询这个构造器列表，判断当前构造器所有参数是否在容器中都可以找到匹配的bean对象，如果可以找到就使用这个构造器进行注入，如果不能找到，那么就会跳过这个构造器，继续采用同样的方式匹配下一个构造器，直到找到一个合适的为止。
+1. `autowire="byName";`：
+   - 根据需要注入的属性的**setXxx方法**后面的名字小写(xxx)来去容器中匹配bean，匹配到后就装配进去。
+2. `autowire="byType";`：
+   - 需要注入的属性是什么类型的就从容器中根据类型找到并装配。
+
+3. `autowire="constructor"`：
+   - spring会找到当前bean所在类中所有的构造方法，并将这些构造方法进行排序得到一个构造函数列表（先按修饰符进行排序，public的在前面，其他的在后面，如果修饰符一样的，会按照构造函数参数数量倒叙，也就是采用贪婪的模式进行匹配，spring容器会尽量多注入一些需要的对象），然后会轮询这个构造器列表，判断当前构造器所有参数是否在容器中都可以找到匹配的bean对象，如果可以找到就使用这个构造器进行注入，如果不能找到，那么就会跳过这个构造器，继续采用同样的方式匹配下一个构造器，直到找到一个合适的为止。
+
 
 ```xml
 <!-- 声明了autowire，就会为没有注入有数据的引用数据类型的属性自动装配数据 -->
@@ -772,8 +776,8 @@ JavaConfig就是**使用注解来描述Bean配置**的组件；JavaConfig是Spri
 
 总结：
 
-1. 使用byName时，要保证beanID唯一，并且这个bean需要和自动注入的属性的`setXxx()`方法的方法名后半部分一致（也就是说不包括set）。
-2. 使用byType时，要保证同一类别的bean唯一（不能存在多个同一类的bean对象），并且这个bean需要和被注入的bean的属性的类型一致。
+1. 使用byName时，要保证容器中beanID唯一，并且这个bean的id需要和需要注入的属性的`setXxx()`方法的方法名后半部分一致（小写，驼峰）。
+2. 使用byType时，要保证容器中同一类别的bean唯一（不能存在多个同一类型的bean对象），并且这个bean需要和属性的类型一致（或存在继承关系：接口实现、继承之类的，属性应能接收装配进来的值即可）。
 3. 注入的是对象。
 
 
@@ -785,7 +789,7 @@ JavaConfig就是**使用注解来描述Bean配置**的组件；JavaConfig是Spri
 ```java
 @Configuration
 @ComponentScan("com.lsl.test")
-public class SConfig {
+public class SConfig { 
     @Bean
     public Cat cat() {
         Cat cat = new Cat();
@@ -829,7 +833,7 @@ spring从两个角度实现自动化装配：
 
 **使用注解时需要开启注解支持，开启注解支持有两种方式：**
 
-1. 在xml文件中开启注解支持。
+1. 在xml配置文件中开启注解支持。
 
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
@@ -858,15 +862,15 @@ spring从两个角度实现自动化装配：
    }
    ```
 
-关于组件扫描的细节问题：
+关于组件扫描的细节问题：（设置扫描使用特定注解的类）
 
 ```xml
 <!-- 
-	use-default-filters：表示不使用默认的filter来对类进行扫描过滤
+	use-default-filters：设置使不使用默认的filter来对类进行扫描过滤
 	context:include-filter：设置要对带哪个注解的类进行扫描
     context:exclude-filter：设置要对带哪个注解的类不进行扫描
 -->
-<!-- 如下：扫描com.lsl.test包下带@Controller注解的类，不扫描带@Component的类 -->
+<!-- 如下示例：扫描com.lsl.test包下带@Controller注解的类，不扫描带@Component的类 -->
 <context:component-scan base-package="com.lsl.test" use-default-filters="false">
     <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Component"/>
@@ -874,10 +878,10 @@ spring从两个角度实现自动化装配：
 ```
 
 ```xml
-<!-- 像@Resource 、@PostConstruct、@Antowired，spring给我们提供<context:annotation-config/>这个简化配置方式来提供这几个注解的支持，但没有能提供@Componet等注解的支持 -->
+<!-- 像@Resource 、@PostConstruct、@Autowired，spring给我们提供<context:annotation-config/>这个简化配置方式来提供这几个注解的支持，但没有能提供@Componet等注解的支持 -->
 <context:annotation-config/> 
 
-<!-- component-scan，除了具有annotation-config的功能之外，还具有自动将带有@component,@service,@Repository等注解的对象注册到spring容器中的功能，因此一般使用这个就可以了 -->
+<!-- component-scan，除了具有annotation-config的功能之外，还具有自动将带有@Component,@Service,@Repository等注解的对象注册到spring容器中的功能，因此一般使用这个就可以了 -->
 <context:component-scan base-package="com.lsl.useanno"/>
 ```
 
