@@ -56,11 +56,11 @@ SSH框架：Struct2 + Spring + Hibernate(全自动)；SSM框架：SpringMVC + Sp
     <artifactId>spring-webmvc</artifactId>
     <version>5.3.7</version>
 </dependency>
-<!-- 使用AOP时需要导入的包 -->
+<!-- 使用AOP时需要导入的包 aspectjweaver包含aspectjrt，所以只需要引入aspectjweaver即可 -->
 <!-- AspectJ 运行时包和织入包 -->
 <dependency>
 	<groupId>org.aspectj</groupId>
-	<artifactId>aspectjrt</artifactId>
+	<artifactId>aspectjrt</artifactId> // 支持aop相关注解等
 	<version>1.9.6</version>
 </dependency>
 <dependency>
@@ -1435,7 +1435,7 @@ after切面在invoke()中用try finally 包裹业务代码。业务代码执行�
 关于切点表达式的简单使用：
 
 ```java
-// 切点表达式格式：`execution(返回类型 方法所属的类.方法(参数))`
+// 切点表达式格式：`execution(返回类型 方法所属的类或接口.方法(参数))`
 // * 表示任意的意思 .. 表示任意参数  返回类型后面的就是用来声明切点的
 @Before("execution(* com.lsl.pojo.Performance.perform(..))")
 
@@ -1448,128 +1448,128 @@ after切面在invoke()中用try finally 包裹业务代码。业务代码执行�
 
 使用注解实现AOP，要先定义好类（作为切面的类）及其成员方法（通知方法），使用@Aspect将该类定义为一个切面，使用其他五个注解来声明通知方法，五个注解对应的调用时间不同（相对目标方法调用时间）。
 
-1. 明确目标接口和其实现类：
+1、明确目标接口和其实现类：
 
-   ```java
-   public interface Performance {  
-       public void perform();
-   }
-   // 接口实现类
-   public class PerformanceImpl implements Performance{
-       @Override
-       public void perform() {
-           System.out.println("演出啦！！！演出完毕啦！！！");
-       }
-   }
-   ```
+```java
+public interface Performance {  
+    public void perform();
+}
+// 接口实现类
+public class PerformanceImpl implements Performance{
+    @Override
+    public void perform() {
+        System.out.println("演出啦！！！演出完毕啦！！！");
+    }
+}
+```
 
-2. 使用注解来声明切面、切点和通知方法：
+2、使用注解来声明切面、切点和通知方法：
 
-   ```java
-   /* 使用除@Around外的注解 */
-   @Aspect // 定义切面
-   public class Audience {
-       /* 直接在目标方法上声明切点
-       这样就不用为通知方法都指定这么长的切点表达式了 "execution(* com.lsl.pojo.Performance.perform(..))"*/
-       @Pointcut("execution(* com.lsl.pojo.Performance.perform(..))")
-       public void performance() {}
-       // 目标方法执行前
-       @Before("performance()")
-       public void beforePro() {
-           System.out.println("演出前：手机静音");
-       }
-       @Before("performance()")
-       public void takeSeats() {
-           System.out.println("演出前：找座位坐下");
-       }
-       // 目标方法执行后的通知
-       @AfterReturning("performance()")
-       public void applause() {
-           System.out.println("观看演出：鼓掌，鼓掌");
-       }
-       @AfterThrowing("execution(* com.lsl.pojo.Performance.perform(..))")
-       public void demandRefund() {
-           System.out.println("演出不符预期：要求退款");
-       }
-   }
-   /* 使用@Around 环绕通知 */
-   @Aspect // 定义切面
-   public class Audience {
-       @Pointcut("execution(* com.lsl.pojo.Performance.perform(..))")
-       public void performance() {}
-       @Around("performance()")
-       // ProceedingJoinPoint joinPoint 必须要，因为要在通知中通过它来调用被通知的方法
-       public void watchPro(ProceedingJoinPoint joinPoint) {
-           try{
-               System.out.println("演出前：手机静音");
-               System.out.println("演出前：找座位坐下");
-               // joinPoint.proceed()-将控制权交给被通知的方法，如果不调用，就是阻塞被通知方法的访问
-               //Signature signature = joinPoint.getSignature();//只是用来获取签名
-               //System.out.println("signature:" + signature);
-               joinPoint.proceed();
-               System.out.println("观看演出：鼓掌，鼓掌");
-           }catch (Throwable e) {
-               System.out.println("演出不符预期：要求退款");
-           }
-       }
-   }
-   ```
+```java
+/* 使用除@Around外的注解 */
+@Aspect // 定义切面
+public class Audience {
+    /* 直接在目标方法上声明切点
+    这样就不用为通知方法都指定这么长的切点表达式了 "execution(* com.lsl.pojo.Performance.perform(..))"*/
+    @Pointcut("execution(* com.lsl.pojo.Performance.perform(..))")
+    public void performance() {}
+    // 目标方法执行前
+    @Before("performance()")
+    public void beforePro() {
+        System.out.println("演出前：手机静音");
+    }
+    @Before("performance()")
+    public void takeSeats() {
+        System.out.println("演出前：找座位坐下");
+    }
+    // 目标方法执行后的通知
+    @AfterReturning("performance()")
+    public void applause() {
+        System.out.println("观看演出：鼓掌，鼓掌");
+    }
+    @AfterThrowing("execution(* com.lsl.pojo.Performance.perform(..))")
+    public void demandRefund() {
+        System.out.println("演出不符预期：要求退款");
+    }
+}
+/* 使用@Around 环绕通知 */
+@Aspect // 定义切面
+public class Audience {
+    @Pointcut("execution(* com.lsl.pojo.Performance.perform(..))")
+    public void performance() {}
+    @Around("performance()")
+    // ProceedingJoinPoint joinPoint 必须要，因为要在通知中通过它来调用被通知的方法
+    public void watchPro(ProceedingJoinPoint joinPoint) {
+        try{
+            System.out.println("演出前：手机静音");
+            System.out.println("演出前：找座位坐下");
+            // joinPoint.proceed()-将控制权交给被通知的方法，如果不调用，就是阻塞被通知方法的访问
+            //Signature signature = joinPoint.getSignature();//只是用来获取签名
+            //System.out.println("signature:" + signature);
+            joinPoint.proceed();
+            System.out.println("观看演出：鼓掌，鼓掌");
+        }catch (Throwable e) {
+            System.out.println("演出不符预期：要求退款");
+        }
+    }
+}
+```
 
-3. 使用JavaConfig或XML来使切面生效（将切面注册进IoC容器，否则切面类就是一个简单的类、bean）：
+3、使用JavaConfig或XML来使切面生效（将切面注册进IoC容器，否则切面类就是一个简单的类、bean）：
 
-   1. **使用JavaConfig方式：** 
+1. **使用JavaConfig方式：** 
 
-     ```java
-   @Configuration 
-   // 下面的注解启用AspectJ自动代理，注解生效后将会创建将Audience转换为切面的代理, 代理把Audience转换为切面
-   // 使@Aspect注解生效
-   @EnableAspectJAutoProxy 
-   public class JavaConfig {
-       @Bean
-       public Audience audience(){
-           return new Audience();
-       }
-       @Bean
-       public Performance performance(){
-           return new PerformanceImpl();
-       }
-   }
-   // 测试
-   public class Test {
-       public static void main(String[] args) {
-           ApplicationContext app = new AnnotationConfigApplicationContext(JavaConfig.class);
-           Performance p = (Performance) app.getBean("performance");
-           p.perform();
-       }
-   }
-     ```
+```java
+@Configuration 
+// 下面的注解启用AspectJ自动代理，注解生效后将会创建将Audience转换为切面的代理, 代理把Audience转换为切面
+// 使@Aspect注解生效
+@EnableAspectJAutoProxy 
+public class JavaConfig {
+    @Bean
+    public Audience audience(){
+        return new Audience();
+    }
+    @Bean
+    public Performance performance(){
+        return new PerformanceImpl();
+    }
+}
+// 测试
+public class Test {
+    public static void main(String[] args) {
+        ApplicationContext app = new AnnotationConfigApplicationContext(JavaConfig.class);
+        Performance p = (Performance) app.getBean("performance");
+        p.perform();
+    }
+}
+```
 
-   2. **使用XML方式使切面生效：要在约束处声明好spring的aop命名空间** 
+2. **使用XML方式使切面生效：要在约束处声明好spring的aop命名空间** 
 
-     ```xml
-   <!-- 注解驱动，启用AspectJ自动代理，会为使用@Aspect注解的类的bean创建一个代理（因此切面需要注册进IoC容器） -->
-   <aop:aspectj-autoproxy /> 
-   <!-- 注册切面进IoC容器 -->
-   <bean class="com.lsl.annotation.Audience"/> 
-   <!-- 要创建接口实现类的对象，用于调用方法来观测结果 -->
-   <bean id="p" class="com.lsl.pojo.PerformanceImpl"/>
-     ```
+```xml
+<!-- 注解驱动，启用AspectJ自动代理，会为使用@Aspect注解的类的bean创建一个代理（因此切面需要注册进IoC容器） -->
+<aop:aspectj-autoproxy /> 
+<!-- 注册切面进IoC容器 -->
+<bean class="com.lsl.annotation.Audience"/> 
+<!-- 为了观测结果，创建接口实现类的对象，调用其方法来观测结果 -->
+<bean id="p" class="com.lsl.pojo.PerformanceImpl"/>
+```
 
-     ```java
-   /* 测试 */
-   public class Test {
-       public static void main(String[] args) {
-           ApplicationContext apps = new ClassPathXmlApplicationContext("beans.xml");
-           Performance p1 = (Performance) apps.getBean("p");
-           p1.perform(); // 目标方法，切面的通知方法在该方法执行前后执行
-       }
-   }
-   /* 结果 */ 
-   演出前：手机静音
-   演出前：找座位坐下
-   演出啦！！！演出结束啦！！！
-   观看演出：鼓掌，鼓掌
-     ```
+```java
+/* 测试 */
+public class Test {
+    public static void main(String[] args) {
+        ApplicationContext apps = new ClassPathXmlApplicationContext("beans.xml");
+        Performance p1 = (Performance) apps.getBean("p");
+        p1.perform(); // 目标方法，切面的通知方法在该方法执行前后执行
+    }
+}
+/* 结果 */ 
+演出前：手机静音
+演出前：找座位坐下
+演出啦！！！演出结束啦！！！
+观看演出：鼓掌，鼓掌
+```
 
 ## 获取目标方法形参
 
@@ -1676,20 +1676,21 @@ XML的aop命名空间：
 1. 定义切面类实现spring的MethodBeforeAdvice或AfterReturningAdvice接口，并重写方法：
 
   ```java
+// before()方法参数说明：method-被通知方法  objects-被通知方法的传入形参  o-被通知方法的对象
+
 public class BeforeLog implements MethodBeforeAdvice {
     @Override
     public void before(Method method, Object[] objects, Object o) throws Throwable {
         System.out.println(o.getClass().getName()+ "的" + method.getName() + "方法被执行了");
     }
 }
-// before()方法参数说明：method-被通知方法  objects-被通知方法的传入形参  o-被通知方法的对象
+// afterReturning()方法参数说明：第一个Object类型的是被通知方法的返回值，其他的和before()的一致
 public class AfterLog implements AfterReturningAdvice {
     @Override
     public void afterReturning(Object o, Method method, Object[] objects, Object o1) throws Throwable {
         System.out.println("执行了" + method.getName() + "方法，返回结果为" + o);
     }
 }
-// afterReturning()方法参数说明：第一个Object类型的是被通知方法的返回值，其他的和before()的一致
   ```
 
 2. XML配置：
@@ -1713,7 +1714,7 @@ AOP底层，就是使用动态代理实现。（动态代理可以做到不改�
 
 # JdbcTemplate
 
-JdbcTemplate，是spring对JDBC的封装，属于spring-jdbc，定义了一些用来操作数据库的方法，使用JdbcTemplate时如果需要事务管理和异常控制，可引入spring-tx。
+JdbcTemplate，是Spring对JDBC的封装，属于spring-jdbc，定义了一些用来操作数据库的方法，使用JdbcTemplate时如果需要事务管理和异常控制，可引入spring-tx。
 
 1. 使用JdbcTemplate，需要做以下配置：
 
@@ -1783,7 +1784,7 @@ Spring事务的本质其实就是数据库对事务的支持，使用JDBC的事�
 
 **声明式事务管理的两种方式：基于注解（常用）和基于XML配置文件的；Spring事务管理底层使用AOP实现。**
 
-关于spring事务管理的API：PlatformTransactionManager，代表事务管理器，针对不同的框架提供了不同的实现类
+关于Spring事务管理的API：PlatformTransactionManager，代表事务管理器，针对不同的框架提供了不同的实现类
 
 - jdbc：org.springframework.jdbc.datasource.DataSourceTransactionManager。
 

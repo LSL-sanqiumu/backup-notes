@@ -2,13 +2,13 @@
 
 ## 概述
 
-SpringMVC，也叫Spring web MVC，是spring框架的一部分，是轻量级的框架。基于模型-视图-控制器（model、view、controller）模式实现，用于构建灵活、松耦合的web应用程序。学习使用SpringMVC主要在于学习Controller的制作部分，另外还要理解SpringMVC的整个运行逻辑。简单来说，**模型包括了你的数据模型(pojo或bean之类的东西)和业务模型（比如登陆，注册操作等）），用来从后台封装数据到页面的；Controller则是将model层可以在view层显示出来。**
+SpringMVC，也叫Spring web MVC，是Spring框架的一部分，是轻量级的框架。基于模型-视图-控制器（model、view、controller）模式实现，用于构建灵活、松耦合的web应用程序。学习使用SpringMVC主要在于学习Controller的制作部分，另外还要理解SpringMVC的整个运行逻辑。简单来说，**模型包括了你的数据模型(pojo或bean之类的东西)和业务模型（比如登陆，注册操作等）），用来从后台封装数据到页面的；Controller则是将model层可以在view层显示出来。**
 
-对于springMVC的学习，需要掌握中央调度器、前端控制器、视图解析器，理解各自的作用，知道它们的一个工作流程，要熟练使用前端控制器的处理方法（请求处理和请求参数的接收，以及返回值），而方法的使用的关键就是各种注解了。
+对于SpringMVC的学习，需要掌握中央调度器、前端控制器、视图解析器，理解各自的作用，知道它们的一个工作流程，要熟练使用前端控制器的处理方法（请求处理和请求参数的接收，以及返回值），而方法的使用的关键就是各种注解了。
 
-springMVC在servlet的基础上，改进了哪些操作？
+SpringMVC在servlet的基础上，改进了哪些操作？
 
-springmvc的使用步骤：
+SpringMVC的使用步骤：
 
 1. 创建web项目，配置好所需要的依赖。
 2. 创建好中央调度器（其实就是一个servlet）并初始化springmvc容器。
@@ -32,7 +32,7 @@ spring web mvc是spring框架的一部分，导入springmvc的依赖也就导入
 </dependency>
 ```
 
-#### 2、配置中央调度器
+### 2、配置中央调度器
 
 web.xml里配置中央调度器（也就是相当配置了一个servlet）：
 
@@ -66,7 +66,7 @@ web.xml里配置中央调度器（也就是相当配置了一个servlet）：
 
 
 
-#### 3、配置视图解析器
+### 3、配置视图解析器
 
 resources目录里的springmvc.xml配置，用来配置视图解析器和注解扫描：
 
@@ -94,7 +94,7 @@ resources目录里的springmvc.xml配置，用来配置视图解析器和注解�
 
 
 
-#### 4、进行开发
+### 4、进行开发
 
 controller、过滤器、静态资源处理。
 
@@ -134,8 +134,10 @@ controller、过滤器、静态资源处理。
 **关于中央调度器的url-pattern：**
 
 1. 在没有特殊要求的情况下，常使用后缀匹配的方式，如设置为`*.do`用于匹配请求路径尾部带.do后缀的请求。
-2. 如果写成`/*`，只是所有的`.jsp`资源将失效，报404。
-3. 如果写成`/`（RESTful风格下会这样做），那么webapp根目录下的HTML、css、js、图片等静态资源将会失效，无法直接访问到并且也不能通过前端控制器访问到，此时必须要对静态资源进行处理才能访问（见目录：静态资源处理）。
+2. 需要对静态资源进行处理：
+   - 如果写成`/*`，只是所有的`.jsp`资源将失效，报404；经测试，此时webapp下的文件都不能通过前端控制器访问到，要对静态资源进行处理才能访问。
+   - 如果写成`/`（RESTful风格下会这样做），那么webapp根目录下的HTML、css、js、图片等静态资源将全部失效，无法直接访问到并且也不能通过前端控制器访问到，此时必须要对静态资源进行处理才能访问（见目录：静态资源处理）。
+
 
 **关于init-param：**
 
@@ -230,7 +232,7 @@ init(){
 
 ## 简单介绍
 
-前端控制器Controller，里面的方法可以对应多个请求路径。（路径都是相对于webapp的根路径，`/WEB-INF/`路径下的资源不能直接访问，需要经过中央调度器访问）
+前端控制器Controller，里面的方法可以对应多个请求路径。（路径都是相对于webapp的根路径，`/WEB-INF/`路径下的资源不能直接访问，需要经过中央调度器才能访问）
 
 ```java
 // 不使用视图解析器时
@@ -326,11 +328,13 @@ public class MyController{
 
 @RequestMapping的属性：
 
-1. value：指定映射路径，可设置多个映射路径。
+1. name：相当于方法的诠释。
 
-2. method：指定该请求的请求方法必须是GET或POST。
+2. value、path：指定映射路径，可设置多个映射路径。
 
-3. params：指定请求必须要包括请求参数。
+3. method：指定该请求的请求方法必须是GET或POST。
+
+4. params：指定请求必须要包括请求参数。
 
    - `params={"param1","param2"}`：请求映射所匹配的请求必须带指定参数。
    - `params={"!param1","!param2"}`：请求映射所匹配的请求必须不带指定参数。
@@ -343,7 +347,7 @@ public class MyController{
    @RequestMapping("/test") 
    public class MyController{
        // 指定params后，发起的请求得是localhost:8081/webapp名/test/some.do?username=xxx才行
-       // 发起的请求后没有username这个请求参数则会匹配不成功（请求参数得和params的匹配）
+       // 发起的请求后没有username这个请求参数则会匹配失败（请求参数得和params的匹配）
        @RequestMapping(value = {"/some.do", "/first.do"}, method = RequestMethod.GET,params={"username"})
        public String login(){
            
@@ -351,12 +355,16 @@ public class MyController{
    }
    ```
 
-4. headers：请求头必须包括符合某些条件。
+5. headers：请求头必须包括符合某些条件。
 
-   - `headers={"headse"}`：必须携带该请求头的信息。
-   - `headers={"!headse"}`：不能携带该请求头的信息。
-   - `headers={"headse=value"}`：必须携带该请求头并且该请求头信息得是value。
-   - `headers={"headse！=value"}`：必须携带该请求头并且该请求头信息不能是value。
+   - `headers={"headse"}`：必须携带该请求头的某个属性信息。
+   - `headers={"!headse"}`：不能携带该请求头的某个属性信息。
+   - `headers={"headse=value"}`：必须携带该请求头并且该请求头的headse属性信息得是value。
+   - `headers={"headse！=value"}`：必须携带该请求头并且该请求头的headse属性信息不能是value。
+
+6. consumes：指定处理请求的提交内容类型（Content-Type），例如：application/json、text/html时，才能够让该方法处理请求。
+
+7. produces：指定返回的内容类型，返回的内容类型必须是request请求头（Accept）中所包含的类型，可以指定返回值的编码`produces = "application/json，charset=utf-8"`。
 
 @RequestMapping的派生注解：@GetMapping、@PostMapping、@PutMapping、@DeleteMapping。
 

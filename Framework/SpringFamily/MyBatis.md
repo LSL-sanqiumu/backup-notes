@@ -340,7 +340,7 @@ jdbc.passwd=123456
 **全局配置中映射文件引入的三种方式：**
 
 ```xml
-<!-- 使用相对于类路径来引入映射文件 -->
+<!-- 使用相对于类路径-resource目录来引入映射文件 -->
 <mappers>
     <mapper resource="org/mybatis/builder/AuthorMapper.xml"/>
     <mapper resource="org/mybatis/builder/BlogMapper.xml"/>
@@ -380,155 +380,13 @@ jdbc.passwd=123456
 </mapper>
 ```
 
-**namespace元素：**将映射器文件与接口绑定，要求接口中声明的方法和映射文件中定义的SQL方法的id一致，使用namespace就可以面向接口编程了。
+**namespace元素：**将映射器文件与映射器接口绑定，要求接口中声明的方法和映射文件中定义的SQL方法的id一致，使用namespace就可以面向接口编程了。
 
 当在全局配置中使用`<mapper package="">`来引入映射文件时，映射文件名称才要求与接口名一致。
 
-## SQL的参数接收
+## SQL
 
-**1、MyBatis获取参数值的两种方式：**
-
-1. `${}`：本质就是字符串拼接，直接将SQL与`${}`所代表的值相连在一起。若为字符串类型或日期类型的字段进行赋值时，需要手动加单引号（`'${}'`），如果不加，则是字符值。
-2. `#{}`：本质就是占位符赋值  。此时为字符串类型或日期类型的字段进行赋值时，会自动添加单引号，不需要我们手动添加。
-
-**2、SQL语句——参数接收：**
-
-**传入基本类型的单个参数**：MyBatis不会对其进行任何处理，此时可使用`#{参数名}`来获取参数（此时对参数名没有什么强制要求）。
-
-```xml
-<mapper namespace="test">
-    <select id="getAll" resultType="com.lsl.pojo.School">
-        select * from school where pid=${id}
-    </select>
-</mapper>
-```
-
-**传入基本类型的多个参数：**若mapper接口中的方法形参为多个，此时MyBatis会自动将这些参数放在一个map集合中，然后取值时参数名就得是默认的key：`param1、param2、param3、...`或`arg0、arg1、arg2...`；可以在mapper接口方法形参类型前**使用`@Param("id")`注解指定key**，就不用通过默认的key来取值了。
-
-```xml
-<!-- 使用arg接收参数值 -->
-<select id="getOne" resultType="User">  
-    select * from t_user where username = #{arg0} and password = #{arg1}  
-</select>
-<!-- 使用param接收参数值 -->
-<select id="getOne" resultType="User">
-    select * from t_user where username = '${param1}' and password = '${param2}'
-</select>
-```
-
-通过@Param注解标识mapper接口中的方法形参时，会将这些参数放在map集合中 ：
-
-```xml
-<!--User CheckLoginByParam(@Param("username") String username, @Param("password") String password);-->
-<select id="CheckLoginByParam" resultType="User">
-    select * from t_user where username = #{username} and password = #{password}
-</select>
-```
-
-**传入pojo对象：**如果需要传入的多个参数是业务逻辑的数据模型，那么可以传入pojo对象，然后通过`#{属性名}`就可以直接取到pojo对象的属性值。
-
-```xml
-<!--int addSchool(School school);-->
-<insert id="addSchool" parameterType="com.lsl.pojo.School">
-	insert into school values(null,#{schoolname},#{schoolid}})
-</insert>
-<!-- 注意：如果使用${}，取字符串类型、日期类型的属性的数据时需要手动加单引号 -->
-```
-
-**传入Map类型参数：**如果多个参数不是业务模型中的数据，没有对应的pojo，并且不经常使用的情况下，那么可以使用Map类型数据传值。（若mapper接口中的方法的形参为多个时，此时可以手动创建Map集合并将这些数据放在Map并以Map类型作为形参，那样只需要通过`${}`和`#{}`访问Map集合的键就可以获取相对应的值了）
-
-```xml
-<select id="getOne" resultType="User">
-	select * from t_user where username = #{username} and password = #{password}
-</select>
-<!-- 注意：如果使用${}，取字符串类型、日期类型的属性的数据时需要手动加单引号 -->
-<!-- 接口方法： User getOne(Map<String,Object> map); -->
-Map<String,Object> map = new HashMap<>();
-map.put("usermane","admin");
-map.put("password","123456");
-mapper.getOne(map);
-```
-
-**传入Collection(List、Set)、数组**：框架会把这些数据封装进Map，此时的key为collection（Collection）、list或collection（List）、array（数组）；如果取值就是这样取值：`#{list[0]}`——取List集合的第一个值；`#{array[0]}`——取数组的第一个值。
-
-```xml
-<!-- int addMore(User[] users); -->
-<!-- 其他取值方式见动态SQL -->
-<insert id="addMore">
-    insert into review.user values
-    (#{array[0].id},#{array[0].name},#{array[0].age},#{array[0].acct},#{array[0].passwd}),
-    (#{array[1].id},#{array[1].name},#{array[1].age},#{array[1].acct},#{array[1].passwd})
-</insert>
-```
-
-**什么情况下传Map类型的值？**
-
-当javabean不够用的时候；什么时候javabean不够用？一般一张表对应一个javabean，当传值的时候，一些值是A表的，一些值是B表的，而使用select等语句只能传入对象或单个值，这时如果要传入A、B表的值就只能再建一个class，也就是原有的javabean不够用，得再建一个javabean。但单独为一条语句建一个javabean是不明智的，这时就可以使用Map集合传入多个值给语句了。（但如果这数据是经常要用于各种SQL语句之中、经常使用的，可以考虑建pojo）。
-
-**`#{}`的丰富用法：** （用于规定参数规则，jdbcType等）
-
-```java
-// 全局配置中：jdbcTypeForNull=OTHER，而Oracle不支持；两种解决方法：
-// 1：
-#{email,jdbcType=OTHER}
-// 2：
-<settings>
-	<setting name="jdbcTypeForNull" value="NULL"/>    
-</settings>
-```
-
-**`#{}和${}`的区别 ：**（都可以取pojo和map的值）
-
-1. `#{}`：以预编译的显式将参数设置到SQL语句中；PreparedStatement。
-2. `${}`：取出值直接拼接进SQL语句中；Statement。（原生jdbc不支持使用占位符的地方就可以使用这个，例如分表、排序等场景）
-
-参数封装为Map的源码分析（了解）：
-
-
-
-
-
-parameterType属性
-
-parameterType属性：翻译为参数类型，指定传入的数据的数据类型，占位符接收值必须使用`#{xxx}`；只有当parameterType是简单类型时可以省略不写（如果传入参数是一个数组、Collection或Map类型的数据时，那么可以不用指定parameterType，框架会将这些数据封装进一个Map）。简单类型有17个：
-
-1. 8个基本数据类型：byte、char 、short、int、long、float、double、boolean。
-2. 8个包装类型：Byte Short Integer Long Double Float Character Boolean。
-3. 一个不可变字符串：String。
-
-```xml
-<!-- parameterType="java.lang.String" -->
-<select id="getById" resultType="com.lsl.domain.Student">
-    select id as sid,name as sname,birth as sbirth
-    from t_student where id=#{fafasfa};
-    <!--当一个SQL语句的占位符只有一个 这时{}内可以随意 -->
-</select>
-```
-
-parameterType专门用来指定给SQL语句传值时传入参数的类型的，传入参数类型可以是javabean（Java含有get、set方法的类）、简单类型、Map等数据类型。例如传入Map类型的数据，parameterType有以下多种写法：
-
-```xml
-<!--
-    parameterType="java.util.Map"
-    parameterType="java.util.HasMap"
-    parameterType="Map"
-    parameterType="map"
--->
-<!-- 此时parameterType也可以省略 -->
-<insert id="putmap" parameterType="map">
-    insert into t_student(id,name,birth) values(#{xh},#{mz},#{sr})
-</insert>
-```
-
-```java
-Map<String, String> map = new HashMap<>();
-map.put("mz","龙舌兰");
-map.put("xh","1001");
-map.put("sr","1999.09.09");
-sqlSession1.insert("putmap", map);
-```
-
-## 配置增删改查的SQL
+### 配置SQL语句
 
 **1、select标签——查询语句：**
 
@@ -590,7 +448,151 @@ System.out.println(u.getId()); // 取得主键值
 
 
 
-## resultType
+### SQL的参数接收
+
+**1、MyBatis获取参数值的两种方式：**
+
+1. `${}`：本质就是字符串拼接，直接将SQL与`${}`所代表的值相连在一起。若为字符串类型或日期类型的字段进行赋值时，需要手动加单引号（`'${}'`），如果不加，则是字符值。
+2. `#{}`：本质就是占位符赋值  。此时为字符串类型或日期类型的字段进行赋值时，会自动添加单引号，不需要我们手动添加。
+
+**2、SQL语句——参数接收：**
+
+**①传入基本类型的单个参数**：MyBatis不会对其进行任何处理，此时可使用`#{参数名}`来获取参数（此时对参数名没有什么强制要求）。
+
+```xml
+<mapper namespace="test">
+    <select id="getAll" resultType="com.lsl.pojo.School">
+        select * from school where pid=${id}
+    </select>
+</mapper>
+```
+
+**②传入基本类型的多个参数：**若mapper接口中的方法形参为多个，此时MyBatis会自动将这些参数放在一个map集合中，然后取值时参数名就得是默认的key：`param1、param2、param3、...`或`arg0、arg1、arg2...`；可以在mapper接口方法形参类型前**使用`@Param("id")`注解指定key**，就不用通过默认的key来取值了。
+
+```xml
+<!-- 使用arg接收参数值 -->
+<select id="getOne" resultType="User">  
+    select * from t_user where username = #{arg0} and password = #{arg1}  
+</select>
+<!-- 使用param接收参数值 -->
+<select id="getOne" resultType="User">
+    select * from t_user where username = '${param1}' and password = '${param2}'
+</select>
+```
+
+通过@Param注解标识mapper接口中的方法形参时，也会将这些参数放在map集合中 ：
+
+```xml
+<!--User CheckLoginByParam(@Param("username") String username, @Param("password") String password);-->
+<select id="CheckLoginByParam" resultType="User">
+    select * from t_user where username = #{username} and password = #{password}
+</select>
+```
+
+**③传入pojo对象：**如果需要传入的多个参数是业务逻辑的数据模型，那么可以传入pojo对象，然后通过`#{属性名}`就可以直接取到pojo对象的属性值。
+
+```xml
+<!--int addSchool(School school);-->
+<insert id="addSchool" parameterType="com.lsl.pojo.School">
+	insert into school values(null,#{schoolname},#{schoolid}})
+</insert>
+<!-- 注意：如果使用${}，取字符串类型、日期类型的属性的数据时需要手动加单引号 -->
+```
+
+**④传入Map类型参数：**如果多个参数不是业务模型中的数据，没有对应的pojo，并且不经常使用的情况下，那么可以使用Map类型数据传值。（若mapper接口中的方法的形参为多个时，此时可以手动创建Map集合并将这些数据放在Map并以Map类型作为形参，那样只需要通过`${}`和`#{}`访问Map集合的键就可以获取相对应的值了）
+
+```xml
+<select id="getOne" resultType="User">
+	select * from t_user where username = #{username} and password = #{password}
+</select>
+<!-- 注意：如果使用${}，取字符串类型、日期类型的属性的数据时需要手动加单引号 -->
+<!-- 接口方法： User getOne(Map<String,Object> map); -->
+Map<String,Object> map = new HashMap<>();
+map.put("usermane","admin");
+map.put("password","123456");
+mapper.getOne(map);
+```
+
+**⑤传入Collection(List、Set)、数组**：框架会把这些数据封装进Map，此时的key为collection（Collection）、list或collection（List）、array（数组）；如果取值就是这样取值：`#{list[0]}`——取List集合的第一个值；`#{array[0]}`——取数组的第一个值。
+
+```xml
+<!-- int addMore(User[] users); -->
+<!-- 其他取值方式见动态SQL -->
+<insert id="addMore">
+    insert into review.user values
+    (#{array[0].id},#{array[0].name},#{array[0].age},#{array[0].acct},#{array[0].passwd}),
+    (#{array[1].id},#{array[1].name},#{array[1].age},#{array[1].acct},#{array[1].passwd})
+</insert>
+```
+
+**⑥什么情况下传Map类型的值？**
+
+当javabean不够用的时候；什么时候javabean不够用？一般一张表对应一个javabean，当传值的时候，一些值是A表的，一些值是B表的，而使用select等语句只能传入对象或单个值，这时如果要传入A、B表的值就只能再建一个class，也就是原有的javabean不够用，得再建一个javabean。但单独为一条语句建一个javabean是不明智的，这时就可以使用Map集合传入多个值给语句了。（但如果这数据是经常要用于各种SQL语句之中、经常使用的，可以考虑建pojo）。
+
+**⑦`#{}`的丰富用法：** （用于规定参数规则，jdbcType等）
+
+```java
+// 全局配置中：jdbcTypeForNull=OTHER，而Oracle不支持；两种解决方法：
+// 1：
+#{email,jdbcType=OTHER}
+// 2：
+<settings>
+	<setting name="jdbcTypeForNull" value="NULL"/>    
+</settings>
+```
+
+**⑧`#{}和${}`的区别 ：**（都可以取pojo和map的值）
+
+1. `#{}`：以预编译的显式将参数设置到SQL语句中；PreparedStatement。
+2. `${}`：取出值直接拼接进SQL语句中；Statement。（原生jdbc不支持使用占位符的地方就可以使用这个，例如分表、排序等场景）
+
+参数封装为Map的源码分析（了解）：
+
+
+
+### parameterType
+
+parameterType属性：翻译为参数类型，指定传入的数据的数据类型，占位符接收值必须使用`#{xxx}`；只有当parameterType是简单类型时可以省略不写（如果传入参数是一个数组、Collection或Map类型的数据时，那么可以不用指定parameterType，框架会将这些数据封装进一个Map）。简单类型有17个：
+
+1. 8个基本数据类型：byte、char 、short、int、long、float、double、boolean。
+2. 8个包装类型：Byte Short Integer Long Double Float Character Boolean。
+3. 一个不可变字符串：String。
+
+```xml
+<!-- parameterType="java.lang.String" -->
+<select id="getById" resultType="com.lsl.domain.Student">
+    select id as sid,name as sname,birth as sbirth
+    from t_student where id=#{fafasfa};
+    <!--当一个SQL语句的占位符只有一个 这时{}内可以随意 -->
+</select>
+```
+
+parameterType专门用来指定给SQL语句传值时传入参数的类型的，传入参数类型可以是javabean（Java含有get、set方法的类）、简单类型、Map等数据类型。例如传入Map类型的数据，parameterType有以下多种写法：
+
+```xml
+<!--
+    parameterType="java.util.Map"
+    parameterType="java.util.HasMap"
+    parameterType="Map"
+    parameterType="map"
+-->
+<!-- 此时parameterType也可以省略 -->
+<insert id="putmap" parameterType="map">
+    insert into t_student(id,name,birth) values(#{xh},#{mz},#{sr})
+</insert>
+```
+
+```java
+Map<String, String> map = new HashMap<>();
+map.put("mz","龙舌兰");
+map.put("xh","1001");
+map.put("sr","1999.09.09");
+sqlSession1.insert("putmap", map);
+```
+
+
+
+### resultType
 
 resultType专门用来指定将**查询结果集**封装到哪种数据类型中，可以使用javabean（Java含有get、set方法的class）、简单数据类型、Map等来封装查询返回的数据，resultType不能省略，只有select语句有。javabean不够用的情况下使用Map集合封装（跨表的情况下）。结果集封装到集合中需要注意以下细节：
 
@@ -637,11 +639,11 @@ Map<String, Object> getAllUserToMap();
 
 
 
-## resultMap
+### resultMap
 
 （和resultType只能二选一）
 
-### 结果集封装规则
+#### 结果集封装规则
 
 自定义结果集封装规则，不指定字段与对象属性的映射时会自动根据type（数据类型）进行映射封装；使用Map时都基本会设置所有的Java类属性与查询结果的字段的映射规则；自定义结果集的类型一般都是自定义的JavaBean，基本都是用于联表查询后的数据封装。基本示例如下：
 
@@ -675,7 +677,7 @@ Map<String, Object> getAllUserToMap();
 </settings>
 ```
 
-### 应用场景
+#### 应用场景
 
 resultMap应用场景一：联表查询后定义JavaBean中的对象属性与结果集数据的映射
 
@@ -727,7 +729,7 @@ resultMap应用场景一：联表查询后定义JavaBean中的对象属性与结
 
 
 
-### 分步查询和懒加载
+#### 分步查询和懒加载
 
 分步查询（可使用association实现）和懒加载：（懒加载：需要使用到查询的信息时才进行加载，用不到就不加载）
 
@@ -772,7 +774,7 @@ resultMap应用场景一：联表查询后定义JavaBean中的对象属性与结
 
 
 
-### 拓展
+#### 拓展
 
 1. 分步查询可以传递多个值，将多列的值通过Map传递：` column="{key1=column1,key2=column2,...}"`。
 2. 开启了懒加载，但还可以在分步查询设置处进行是否需要懒加载的设置：`fethType="lazy"`（lazy：延迟，eager：立即）。
@@ -797,7 +799,7 @@ resultMap中的鉴别器：鉴别字段值来决定是否改变查询结果的�
 
 
 
-## 动态SQL语句
+## 动态SQL
 
 动态SQL：传入多个参数用于SQL语句的查询，最后完整的SQL语句由传入参数和自己设定的表达式规则来确定，SQL语句不是一成不变的，而是随传入参数的不同而变化着的。
 
