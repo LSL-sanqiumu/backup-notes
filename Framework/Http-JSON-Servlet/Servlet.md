@@ -15,11 +15,14 @@ Tomcat服务器：Tomcat6实现了sevrlet2.5规范，Tomcat7实现了3.0规范�
 
 架构分类：（S是软件服务器）
 
-1. C/S架构：client / server
+1、C/S架构：client / server
+
   - 娱乐型的，要求用户体验，页面、访问速度好；
   - 缺点：需要安装特定的客户端软件，客户端升级麻烦；
   - 优点：大部分数据集成到客户端软件，只需要从服务器上传少量数据，速度快；客户端页面可以炫酷。
-2. B/S架构：browser / server（本质上还是C/S架构，还是客户端访问服务器，只不过客户端是浏览器）
+
+2、B/S架构：browser / server（本质上还是C/S架构，还是客户端访问服务器，只不过客户端是浏览器）
+
   - 企业内部使用的办公系统，界面要求不高、访问速度不是很慢，要求升级方便；
   - 优点：不需要特定客户端软件，只需要一个浏览器，升级只需要升级服务器端；
   - 缺点：数据都集成在服务器，发生意外时数据丢失严重，访问速度慢；页面粗糙。
@@ -52,7 +55,7 @@ Servlet的主要接口（javax.servlet包下和javax.servlet.http包下的）：
 
 **Servlet接口的出现：**
 
-浏览器发给服务端的是一个HTTP请求，HTTP服务器收到请求后，需调用服务端程序处理请求。那么HTTP服务器怎么知道需要调用哪个处理方法呢？最简单的就是在HTTP服务器代码写一堆if/else：若是A请求就调x类m1方法，若是B请求就调o类的m2方法。 这种设计的致命点在于HTTP服务器代码跟业务逻辑耦合，若你新增了业务方法，竟然还得改HTTP服务器代码。 **面向接口编程**算得上是解决耦合问题的银弹，我们可定义一个接口，各业务类都实现该接口，没错，它就是Servlet接口，实现了Servlet接口的业务类也叫作Servlet。
+浏览器发给服务端的是一个HTTP请求，HTTP服务器收到请求后，需调用服务端程序处理请求。那么HTTP服务器怎么知道需要调用哪个处理方法呢？最简单的就是在HTTP服务器代码写一堆if/else：若是A请求就调x类m1方法，若是B请求就调o类的m2方法。 这种设计的致命点在于HTTP服务器代码跟业务逻辑耦合，若你新增了业务方法，竟然还得改HTTP服务器代码。 **面向接口编程**算得上是解决耦合问题的银弹，我们可定义一个接口，各业务类都实现该接口，没错，它就是Servlet接口，实现了Servlet接口的业务类也叫作Servlet。（通过接口将具体实现转移）
 
 
 
@@ -266,7 +269,7 @@ web.xml的头部：
 <!-- metadata-complete为false时表示启用注解支持 -->
 ```
 
-## web.xml内标签总结
+## web.xml内常用标签
 
 1. 一个webapp只有一个web.xml文件。
 
@@ -293,7 +296,8 @@ servlet标签用来定义servlet对象，类似于spring中的bean标签，用�
 ```xml
 <servlet>
     <servlet-name>随便起一个名字</servlet-name>
-    <servlet-class>Servlet接口实现类的全路径</servlet-class>
+    <!-- Servlet接口实现类的全类名——包名.类名 -->
+    <servlet-class>xxx</servlet-class>
 </servlet>
 <servlet-mapping>
     <servlet-name>和上面名字一样</servlet-name>
@@ -309,15 +313,19 @@ servlet标签用来定义servlet对象，类似于spring中的bean标签，用�
 欢迎页面是webapp根目录下的HTML、JSP、htm页面资源，也可以是servlet对象、其他页面资源、.action文件等。设置欢迎页面在web-app标签里使用如下标签：（欢迎页面资源在该webapp的根目录）
 
 ```xml
-<!-- 开头不需要“/”，可以设置多个欢迎页面，越靠上越优先，当前面的欢迎页面找不到时才使用后面的欢迎页面 -->
+<!-- 开头可以不写“/”，都是相当于webapp根目录，
+可以设置多个welcome-file，越前面越优先，当前面的欢迎页面找不到时才使用后面的欢迎页面 -->
 <welcome-file-list>
     <welcome-file>login.html</welcome-file>
     <welcome-file>404.html</welcome-file>
+    <welcome-file>/index/hello.html</welcome-file>
     ......
 </welcome-file-list>
 ```
 
-欢迎页面设置分为全局设置和局部设置，全局设置在Tomcat服务器的conf目录的web.xml文件里，局部设置为webapp的web.xml，优先使用的是局部配置。当访问`http://localhost:8081/s1/`时，如果没有配置映射路径为`/`或`/*`的servlet，那么就能跳转到welcome-file-list所指定的欢迎页（因为该页面资源也是webapp根目录下的资源，由Tomcat配置的servlet——default来处理）。
+欢迎页面设置分为全局设置和局部设置，全局设置在Tomcat服务器的conf目录的web.xml文件里，局部设置为webapp的web.xml，优先使用的是局部配置。
+
+当访问`http://localhost:8081/s1/`时，如果没有配置映射路径为`/`或`/*`的servlet，那么才能跳转到welcome-file-list所指定的欢迎页（因为该页面资源也是webapp根目录下的资源，由Tomcat配置的servlet——default来处理），否则welcome-file-list失效。
 
 ### error-page
 
@@ -381,17 +389,11 @@ servlet标签用来定义servlet对象，类似于spring中的bean标签，用�
 ### context-param
 
 1. `<context-param>`标签是上下文参数（全局参数），定义在`<web-app>`标签中。
-2. `<context-param>`标签内还有`<param-name>`、`<param-value>`
-  - `<param-name>`表示参数的name（key）。
-  - `<param-value>`表示name所对应的value。
-
+2. `<context-param>`标签内还有`<param-name>`（key）、`<param-value>`（value）。
 3. `<context-param>`定义的参数属于全局，该webapp下所有Servlet共享。
 4. 这些参数信息封装在ServletContext对象中。
 
 ````xml
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
 <webapp>
     <context-param>
         <param-name>username</param-name>
@@ -415,27 +417,18 @@ servlet中需要用到路径的有四处地方：
 
 当在客户端访问服务器资源时，是相对于web服务器的webapps目录，例如访问某个应用，就是`/webappname/xxx`，而在服务器内部的webapp的服务器端处理程序则是相对于该webapp根目录进行寻址定位。
 
-1. `<url-pattern>`标签：以`/`开头，`/`前省略了hostName和webappName；   ---Servlet对象的虚拟路径。
-2. `<a href="#">`标签：要以`/webappName`开头，此时`/`前代表的是主机名，如`http://localhost:8080`。  ---浏览器处理的路径
+1. `<url-pattern>`标签：以`/`开头，`/`前省略了hostName和webappName； ——Servlet对象的虚拟路径。
+2. `<a href="#">`标签：要以`/webappName`开头，此时`/`前代表的是主机名，如`http://localhost:8080`。——浏览器处理的路径
 3. `<welcome-file>`标签：是相对webapp根目录的路径。
-4. `<location></location>`标签：以`/`开头时是相对webapp根目录的路径；不以`/`时开头时是相对于WEB-INF，此时需要通过映射路径才能访问。
+4. `<location></location>`标签：以`/`开头时是相对webapp根目录的路径；不以`/`时开头时是相对于WEB-INF，此时需要通过前端映射器才能访问。
 
 总结：按照以下去进行相对路径定位
 
 1. 前端页面的请求路径是相对于webapps目录；
-
 2. 后端web小程序映射路径相对于项目根目录（webapp）；
-
 3. 相对路径：`/`代表根目录、`../`代表上一级目录、`./`代表当前目录，一般都是从`/`写起，表示作为参考的相对目录。
 
-4. 欢迎页面 
 
-   ```xml
-   <welcome-file-list>
-       <welcome-file>index.html</welcome-file>
-       <welcome-file>WelcomeServlet</welcome-file>
-   </welcome-file-list>
-   ```
 
 ## url-pattern的设置方式
 
@@ -489,12 +482,15 @@ public void ServletConfig getServletConfig() // 返回一个ServletConfig对象�
 public void String getServletInfo() // 返回有关servlet的信息，例如作者，版本和版权
 ````
 
+```text
 servlet对象的生命周期：生命周期表示一个Java对象从最初被创建到最终被销毁，经历的所有过程。注意：
-
 1. Servlet对象的生命周期，javaweb程序员是无权干涉的，包括Servlet对象的相关方法调用，程序员也是无权干涉的。
 2. Servlet对象从最初的创建、方法的调用，以及最后被销毁，都是由web容器（比如Tomcat）来管理的。
 3. Web Container管理Servlet对象的生命周期。
 4. 默认情况 下，Servlet对象在Web容器启动阶段不会被实例化。【若希望在web服务器启动阶段实例化Servlet对象，可以进行特殊设置】。
+```
+
+
 
 **对Servlet对象的生命周期的描述：servlet的创建到死亡**
 
@@ -538,7 +534,7 @@ servlet对象的生命周期：生命周期表示一个Java对象从最初被创
 
      注意：Servlet 对象一旦创建就会驻留在内存中一直等待客户端的访问，直到服务器关闭或项目被移除出容器时，Servlet 对象才会被销毁。
 
-**总结：**对 Servlet 声明周期的几点汇总：
+**总结——对 Servlet 声明周期的几点汇总：**
 
 1. Servlet 对象被创建之后执行 init() 方法，并且 init() 方法只执行一次，其主要目的是完成 Servlet 对象的初始化工作。
 2. 对于 Servlet 对象的 service() 方法，只要用户请求一次，那么 service() 方法就执行一次（其它方法都只执行一次）。
@@ -1701,8 +1697,8 @@ Object getAttribute(String name) //从会话范围中获取数据
 void removeAttribute(String name) //从会话范围中移除某个数据
 
 void invalidate() //销毁session对象
-
-void setMaxInactiveInterval(int interval) //设置session对象失效时间（浏览器向服务器两次请求之间最大时间间隔，超过最大设置时间间隔则销毁此session）
+// dan'w设置session对象失效时间（浏览器向服务器两次请求之间最大时间间隔，超过最大设置时间间隔则销毁此session）
+void setMaxInactiveInterval(int interval) 
 ```
 
 

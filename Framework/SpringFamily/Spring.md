@@ -1611,6 +1611,8 @@ XML的aop命名空间：
 | `<aop:around method="" pointcut=""/>`           | 定义AOP环绕通知，pointcut也可使用pointcut-ref来引用切点      |
 | `<aop:declare-parents>`                         | 以透明的方式为被通知的对象引入额外的接口                     |
 
+aop-config——{切面配置{切点配置、通知方法配置}}
+
 
 
 ### 实现步骤
@@ -1851,8 +1853,9 @@ public class Service {
 
 ## 基于XML
 
-1. 在Spring的xml配置文件配置事务管理器、配置事务通知规则、配置切面。
-2. （需要的依赖：spring-tx、以及aop的）
+1、在Spring的xml配置文件配置事务管理器、配置事务通知规则、配置切面。
+
+2、（需要的依赖：spring-tx、以及spring、aop的）
 
 ```xml
 <!-- 配置事务 -->

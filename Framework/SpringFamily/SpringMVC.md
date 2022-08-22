@@ -1364,57 +1364,61 @@ public class GlobalExceptionHandler {
 4. 常用于：用户登录处理、权限检查、记录日志。
 5. 拦截器执行时间（三个时间点都会执行，对应有着三个方法）：
 
-  - 在controller方法执行前执行拦截 ===> preHandle()。
-  - 在controller方法执行后执行拦截 ===> postHandle()。
-  - 请求处理完成后执行拦截 ===> afterCompletion()。
+     - 在controller方法执行前执行拦截 ===> preHandle()。
+
+     - 在controller方法执行后执行拦截 ===> postHandle()。
+
+     - 请求处理完成后执行拦截 ===> afterCompletion()。
+
 
 **拦截器的使用：**
 
-1. 创建实现HandlerInterceptor接口的拦截器类，然后在springmvc中声明拦截器，先声明的先执行，实际上在框架中保存多个拦截器是用ArrayList集合来保存的。
+1、创建实现HandlerInterceptor接口的拦截器类，然后在springmvc中声明拦截器，先声明的先执行，实际上在框架中保存多个拦截器是用ArrayList集合来保存的。
 
-   ```xml
-   <mvc:interceptors>
-       <!-- 可以声明多个 -->
-       <mvc:interceptor>
-           <!-- mvc:mapping：配置被拦截的URI地址，`/`表示根，通配符`**`表示任意字符 -->
-           <mvc:mapping path="/**"/>
-           <!-- 配置放行的资源，即不会拦截的资源 -->
-           <mvc:exclude-mapping path="/"/>
-           <!-- 实现HandlerInterceptor接口的类 -->
-           <bean class="com.lsl.handler.MyInterceptor"/>
-       </mvc:interceptor>
-       ......
-   </mvc:interceptors>
-   ```
+```xml
+<mvc:interceptors>
+    <!-- 可以声明多个 -->
+    <mvc:interceptor>
+        <!-- mvc:mapping：配置被拦截的URI地址，`/`表示根，通配符`**`表示任意字符 -->
+        <mvc:mapping path="/**"/>
+        <!-- 配置放行的资源，即不会拦截的资源 -->
+        <mvc:exclude-mapping path="/"/>
+        <!-- 实现HandlerInterceptor接口的类 -->
+        <bean class="com.lsl.handler.MyInterceptor"/>
+    </mvc:interceptor>
+    ......
+</mvc:interceptors>
+```
 
-2. 关于HandlerInterceptor接口的三个方法：
+2、关于HandlerInterceptor接口的三个方法：
 
-   ```java
-   @Override
-   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-       return HandlerInterceptor.super.preHandle(request, response, handler);
-   }
-   
-   @Override
-   public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-       HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
-   }
-   
-   @Override
-   public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-       HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
-   }
-   ```
+```java
+@Override
+public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    return HandlerInterceptor.super.preHandle(request, response, handler);
+}
 
-   1. 第一个：预处理方法，在controller方法执行前（发起请求后）执行，项目的入口、门户，返回false将截止； Object handler是被拦截的controller对象该方法常用来获取用户请求信息、验证请求是否符合要求、验证用户是否登录、验证用户是否有权限访问某个链接地址等；如果验证失败就截断请求，请求不能被处理。
-   2. 第二个：后处理方法，在controller方法执行后执行，ModelAndView是controller方法返回值，修改ModelAndView中的视图和参数能影响到最后的执行结果；该方法主要用来对原来的结果进行二次修改。
-   3. 第三个：最后执行的方法，请求处理完成后执行（框架规定，视图处理完成后并对视图执行了forward（转发）后，就认为请求处理完成），Exception是程序中出现的异常；该方法一般做资源回收工作，程序请求过程中创建的对象在这里可以删除，回收占用内存。
+@Override
+public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
+}
 
-3. SpringMVC中的拦截器三个抽象方法总结：
+@Override
+public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+}
+```
 
-   - preHandle()：控制器方法执行之前执行，其boolean类型的返回值表示是否拦截或放行，返回true就表示放行，即可以执行匹配到的控制器方法了；返回false表示拦截，即不能调用该控制器方法。
-   - postHandle()：控制器方法执行之后执行。
-   - afterComplation()：处理完视图和模型数据，渲染视图完毕之后执行。
+- 第一个：预处理方法，在controller方法执行前（发起请求后）执行，项目的入口、门户，返回false将截止； Object handler是被拦截的controller对象该方法常用来获取用户请求信息、验证请求是否符合要求、验证用户是否登录、验证用户是否有权限访问某个链接地址等；如果验证失败就截断请求，请求不能被处理。
+- 第二个：后处理方法，在controller方法执行后执行，ModelAndView是controller方法返回值，修改ModelAndView中的视图和参数能影响到最后的执行结果；该方法主要用来对原来的结果进行二次修改。
+- 第三个：最后执行的方法，请求处理完成后执行（框架规定，视图处理完成后并对视图执行了forward（转发）后，就认为请求处理完成），Exception是程序中出现的异常；该方法一般做资源回收工作，程序请求过程中创建的对象在这里可以删除，回收占用内存。
+- SpringMVC中的拦截器三个抽象方法总结：
+
+  - preHandle()：控制器方法执行之前执行，其boolean类型的返回值表示是否拦截或放行，返回true就表示放行，即可以执行匹配到的控制器方法了；返回false表示拦截，即不能调用该控制器方法。
+
+  - postHandle()：控制器方法执行之后执行。
+
+  - afterComplation()：处理完视图和模型数据，渲染视图完毕之后执行。
 
 
 **拦截器的执行顺序：**

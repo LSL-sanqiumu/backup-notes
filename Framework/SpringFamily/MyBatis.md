@@ -254,6 +254,8 @@ sqlSession.getMapper(TestMapper.class);
     <!-- 引入外部properties配置文件 resource（类路径下） url（网络路径或磁盘路径） -->
     <properties resource="jdbc.properties"/> 
     <settings>
+		<!-- 标准日志工厂实现  k-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
         <!-- 是否开启驼峰命名自动映射，即从经典数据库列名 A_COLUMN 映射到经典 Java 属性名 aColumn -->
     	<setting name="mapUnderscoreToCamelCase" value="true"/>
         <!-- 开启延迟加载 -->
@@ -1255,11 +1257,11 @@ jdbc.passwd=123456
         <property name="dataSource" ref="dataSource"/>
         <!-- 可结合全局配置 -->
         <!--<property name="configLocation" value="classpath:mybatis-config.xml"/>-->
-        <!-- 指定mapper映射文件wei'z -->
+        <!-- 指定mapper映射文件位置 -->
         <property name="mapperLocations" value="classpath:mapper.xml"/>
     </bean>
     <!-- 为了解决MapperFactoryBean繁琐而生的，有了MapperScannerConfigurer就不需要
-	我们去为每个映射接口都声明为一个bean了，大大提高了开发的效率。以前老版本使用-->
+	我们去为每个映射接口都声明为一个bean了，大大提高了开发的效率。以前老版本使用。-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
         <!-- 自动扫描 将Mapper接口生成代理注入到Spring -->
@@ -1573,7 +1575,133 @@ MyBatis Generator，简称MBG，专门为MyBatis使用者定制的**代码生成
 </generatorConfiguration>
 ```
 
+执行插件——双击执行。
+
 # 分页插件
+
+0、配置好MyBatis环境。
+
+1、导入分页插件的依赖：
+
+```xml
+<!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper -->
+<dependency>
+    <groupId>com.github.pagehelper</groupId>
+    <artifactId>pagehelper</artifactId>
+    <version>5.3.1</version>
+</dependency>
+```
+
+2、MyBatis的全局配置文件中声明插件引入：
+
+```xml
+<configuration>
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <!-- 插件——拦截器引入 -->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"/>
+    </plugins>
+</configuration>
+```
+
+3、插件的使用——在需要分页的语句前：
+
+```java
+public static void main(String[] args) {
+    ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+    TestMapper testMapper = app.getBean("testMapper", TestMapper.class);
+    
+    // 注意：只有紧跟着PageHelper.startPage(pageNum,pageSize)的sql语句才被pagehelper起作用
+    // startPage()的第一个参数为页数，第二个参数为每页的数据；意为：第几页开始每页多少条数据
+    PageHelper.startPage(1,4);
+    ArrayList<SysLog> all = testMapper.getAllSysLogByid();
+    for (SysLog s :
+            all) {
+        System.out.println(s);
+    }
+}
+```
+
+```xml
+<select id="getAllSysLogByid" resultType="com.lsl.pojo.SysLog">
+    select * from sys_log
+</select>
+```
+
+设置`PageHelper.startPage(pageNum, pageSize)`对应的`pageNum`和`pageSize`就可以获取到分页后第几页的多少条数据。
+
+4、使用PageInfo：（将分页后数据传入PageInfo的目的是为了去除暂时用不到的其他信息，得到纯净的数据库信息）
+
+```java
+public static void main(String[] args) {
+    ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+    TestMapper testMapper = app.getBean("testMapper", TestMapper.class);
+
+    // 注意：只有紧跟着PageHelper.startPage(pageNum,pageSize)的sql语句才被pagehelper起作用
+    // startPage()的第一个参数为页数，第二个参数为每页的数据；意为：第几页开始每页多少条数据
+    PageHelper.startPage(2,4);
+    ArrayList<SysLog> all = testMapper.getAllSysLogByid();
+    // 把查询结果集放入PageInfo中
+    PageInfo<SysLog> pageInfo = new PageInfo<>(all);
+    List<SysLog> pageData = pageInfo.getList();
+    for (SysLog s :
+            pageData) {
+        System.out.println(s);
+    }
+}
+```
+
+`PageInfo<T> pageInfo = new PageInfo<>(List<T> list, int navigatePages)`。
+
+PageInfo常用属性：
+
+1. pageNum：当前页的页码  
+2. pageSize：每页显示的条数  
+3. size：当前页显示的真实条数  
+4. total：总记录数  
+5. pages：总页数  
+6. prePage：上一页的页码  
+7. nextPage：下一页的页码
+8. isFirstPage/isLastPage：是否为第一页/最后一页  
+9. hasPreviousPage/hasNextPage：是否存在上一页/下一页  
+10. navigatePages：导航分页的页码数  
+11. navigatepageNums：导航分页的页码，\[1,2,3,4,5]
+
+PageInfo这个类里面的属性：
+ `pageNum`当前页
+ `pageSize`每页的数量
+ `size`当前页的数量
+ `orderBy`排序
+ `startRow`当前页面第一个元素在数据库中的行号
+ `endRow`当前页面最后一个元素在数据库中的行号
+ `total`总记录数(在这里也就是查询到的用户总数)
+ `pages`总页数 (这个页数也很好算，每页5条，总共有11条，需要3页才可以显示完)
+ `list`结果集
+ `prePage`前一页
+ `nextPage`下一页
+ `isFirstPage`是否为第一页
+ `isLastPage`是否为最后一页
+ `hasPreviousPage`是否有前一页
+ `hasNextPage`是否有下一页
+ `navigatePages`导航页码数
+ `navigatepageNums`所有导航页号
+ `navigateFirstPage`导航第一页
+ `navigateLastPage`导航最后一页
+ `firstPage`第一页
+ `lastPage`最后一页
+
+
+
+
+
+
+
+
+
+
 
 
 
