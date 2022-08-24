@@ -293,10 +293,6 @@
 
 **稍微逼自己一下，比前一天进步一点点。**亲测，成就感爆棚。
 
-
-
-
-
 # 病态学习
 
 ## 发现自己什么都不懂，什么都想学，又什么都学不精，是不是一种病态？
@@ -622,7 +618,7 @@ Chinese schools are producing a nation of Shereshevskiis, students with photogra
 
 **解决方法：**
 
-这个阶段，你要从行动克制自己，学会管理精力，该学学，该玩玩。合理安排学习计划（学习计划是可完成的、分阶段的），做到劳逸结合，完成计划就休息一小会儿，给自己一个鼓励，建立正反馈，形成[良性循环](https://www.zhihu.com/search?q=良性循环&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2254142883})。
+这个阶段，你要从行动克制自己，学会管理精力，该学学，该玩玩。合理安排学习计划（学习计划是可完成的、分阶段的），做到劳逸结合，完成计划就休息一小会儿，给自己一个鼓励，建立正反馈，形成良性循环。
 
 睡觉的时候，才是知识在潜意识里消化的时候。
 
@@ -644,7 +640,7 @@ Chinese schools are producing a nation of Shereshevskiis, students with photogra
 
 很多学生，不能正确地使用答案。
 
-在做题时，遇到不会的开始翻答案，看了一会儿，看懂了。放下答案，[三下五除二](https://www.zhihu.com/search?q=三下五除二&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2254142883})地把这道题搞定了，就认为自己学会了这道题。他知道这道题只需要做一条[辅助线](https://www.zhihu.com/search?q=辅助线&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2254142883})就能解决，但是这道题的核心恰恰就是考查这条辅助线。
+在做题时，遇到不会的开始翻答案，看了一会儿，看懂了。放下答案，三下五除二地把这道题搞定了，就认为自己学会了这道题。他知道这道题只需要做一条[辅助线](https://www.zhihu.com/search?q=辅助线&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2254142883})就能解决，但是这道题的核心恰恰就是考查这条辅助线。
 
 题目稍微一变形，就又不会了。
 
