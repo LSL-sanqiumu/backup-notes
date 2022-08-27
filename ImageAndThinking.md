@@ -590,7 +590,7 @@ Chinese schools are producing a nation of Shereshevskiis, students with photogra
 
 甚至有些同学还会准备两个笔记本，上课简单记录，回家之后再整理一遍。
 
-上课的目的是为了跟着老师去理解每一个知识点，对比自己的想法和老师的想法有哪些不一样的地方，[查漏补缺](https://www.zhihu.com/search?q=查漏补缺&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2254142883})，这才是上课最重要的事，并不是为了记笔记而听课。
+上课的目的是为了跟着老师去理解每一个知识点，对比自己的想法和老师的想法有哪些不一样的地方，查漏补缺，这才是上课最重要的事，并不是为了记笔记而听课。
 
 3.很多学生都喜欢熬夜学习，好像只有熬夜了才能体现出自己的努力。但是，很多学生都是为了熬夜而熬夜，并不是说非得每天学到那么晚。
 
@@ -1111,8 +1111,6 @@ Chinese schools are producing a nation of Shereshevskiis, students with photogra
 5.给自己紧迫感。
 
 最后我想对所有励志改变自己的人说几句，优秀不一定够能给你带来快乐，但是“不优秀”一定会让你长久的痛苦，每个人的生命中都有最艰难的一年将人生变得美而辽阔。
-
-发布于 2021-06-16 19:32
 
 
 

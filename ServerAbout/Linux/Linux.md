@@ -1,177 +1,6 @@
 # Linux
 
-## Windows下Linux子系统
-
-1. 打开子系统支持
-   - 设置-应用-应用和功能界面里，打开相关设置的“程序和功能”；
-   - 然后选择启用或关闭Windows功能，找到并勾上“适用于Linux的Windows子系统”；
-   - 重启电脑。
-2. 在微软商店下载Ubuntu并安装，安装完成后重启；
-3. 打开Ubuntu，安装完根据提示输入用户名和密码，我的密码`333...`。
-
-```
-Installing, this may take a few minutes...
-Please create a default UNIX user account. The username does not need to match your Windows username.
-For more information visit: https://aka.ms/wslusers
-Enter new UNIX username: scholarkk
-New password:
-Retype new password:
-passwd: password updated successfully
-Installation successful!
-To run a command as administrator (user "root"), use "sudo <command>".
-See "man sudo_root" for details.
-
-Welcome to Ubuntu 20.04.2 LTS (GNU/Linux 4.4.0-19041-Microsoft x86_64)
-
- * Documentation:  https://help.ubuntu.com
- * Management:     https://landscape.canonical.com
- * Support:        https://ubuntu.com/advantage
-
-  System information as of Wed Aug 25 17:56:14 CST 2021
-
-  System load:    0.52      Processes:              7
-  Usage of /home: unknown   Users logged in:        0
-  Memory usage:   45%       IPv4 address for wifi0: 192.168.0.101
-  Swap usage:     0%
-
-1 update can be applied immediately.
-To see these additional updates run: apt list --upgradable
-
-
-The list of available updates is more than a week old.
-To check for new updates run: sudo apt update
-
-
-This message is shown once a day. To disable it please create the
-/home/scholarkk/.hushlogin file.
-```
-
-安装后可能在以下目录：`C:\Users\Scholar\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu20.04onWindows_79rhkp1fndgsc`。
-
-如果要安装到D盘，卸载后通过以下命令创建软链接：（ D:\Ubuntu要有完全控制权限）
-
-`mklink /j C:\Users\Scholar\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu20.04onWindows_79rhkp1fndgsc  D:\Ubuntu`。
-
-使用：
-
-- 打开cmd或ps后，输入bash然后回车就可。
-- 在某一个文件夹目录打开子系统：在该文件夹空白处，按住`shift + 鼠标右键`，然后选择“在此处打开Linux shell”即可。
-
-## Linux安装
-
-Linux主要发行版：Ubuntu（乌班图）、RedHat（红帽）、CentOS 
-
-### 安装
-
-安装虚拟机软件：VMware Workstation 16.1.0 Pro，激活码如下；
-
-```
-ZF3R0-FHED2-M80TY-8QYGC-NPKYF
-YF390-0HF8P-M81RQ-2DXQE-M2UT6
-ZF71R-DMX85-08DQY-8YMNC-PPHV8
-```
-
-下载Linux系统iso文件：
-
-CentOS7.6安装（目前主流环境）：[Index of /7.6.1810/isos/x86_64 (centos.org)](https://vault.centos.org/7.6.1810/isos/x86_64/)
-
-CentOS8.1（未来主流？？21年过就停止维护了）：[CentOS Mirrors List](http://isoredirect.centos.org/centos/8/isos/x86_64/)
-
-CentOS8.4：[Index of /centos/8/isos/x86_64/ (aliyun.com)](https://mirrors.aliyun.com/centos/8/isos/x86_64/)
-
-打开虚拟机软件创建虚拟机：
-
-1. 新建虚拟机：
-  1. 新建虚拟机，选择典型；
-  2. 下一步，选择稍后安装操作系统；
-  3. 下一步，选Linux，选择红帽的7的版本；
-  4. 下一步，为虚拟机取名字，选择虚拟机存放位置（尽量放在内存较大的盘里）；
-  5. 下一步，20GB，磁盘拆分成多个文件；
-  6. 下一步，自定义硬件：（内存2GB、处理器2个、每个处理器内核选2个、网络连接选NAT、其它默认）；
-  7. 完成。
-2. 引入ISO文件：选中虚拟机右键选择设置，然后选中CD/DVD中的使用ISO映像文件，找到下载的ISO文件；
-3. 启动此虚拟机，然后双击出现的黑屏，选择安装install，进入安装界面再按提示按回车；
-4. 然后出现选择语言的，找到中文，选择中文，继续；
-12. 进入安全信息摘要界面，要等待不要点鼠标，否则容易卡死；
-
-      - （上海时区、汉语、简体中文、本地介质）默认的不用动；
-      - 软件选择要动（最小安装是不带界面的，不利于我们学习，实际生产环境（工作中）建议选这个），选择GNOME桌面，然后再在右栏把兼容性程序库、传统的X Windows系统的兼容性、开发工具（gcc、jdk、mysql会默认帮安装）这三个选中；
-6. 点击完成，然后再继续等待检查软件依赖关系（等待几分钟左右不要动鼠标，否则卡死哦）；
-7. 然后再选择安装位置：进入后选择我要配置分区，点击完成后，就进入了手动分区界面，然后开始按如下要求配置分区
-
-     - 一般分为三个区：boot（引导分区，1G）、swap（交换分区，2G）、root（根分区，17G）；
-     - 点击+按钮，添加`/boot`挂载点、1G，然后是标准分区、文件系统是ext4；
-     - 添加`swap`挂载点、2G，标准分区、文件系统是swap；
-     - 添加`/`挂载点、17G，标准分区、文件系统ext4；
-     - 点击完成，接受修改。
-8. KDUMP在实际工作中开启，学习时可不开启；
-9. 然后是网络和主机，打开以太网，可以改一下主机名（不能有空格）；
-10. 最后一个是安全策略，一般可以关闭；
-11. 安装，root用户和设置密码（实际工作中密码设置建议复杂一点），再建一个普通用户；
-12. 等待安装完成，会出现重启，点击重启，然后进入系统，中间要接受一个协议，然后完成配置，进入系统；
-13. 用户名和密码登录，安装成功。
-14. 进入后配置：语言选汉语、输入选拼音、隐私关闭、跳过、开始使用。
-15. 右上角关机。
-16. 释放鼠标（Ctrl + Alt）。
-
-关于三种网络连接模式的理解：（暂时不去学习）
-
-虚拟机克隆：克隆后是另一个和原虚拟机一样的虚拟机
-
-- 方式一：直接拷贝一份安装好的虚拟机文件，拷贝后用vmware打开.vmx文件；
-- 方式二：利用vmware的克隆操作（管理---克隆）（克隆时先关闭Linux系统）。
-
-虚拟机快照：系统状态回退，回退到拍下快照的那一刻
-
-- 虚拟机上点击右键，弹出菜单有快照。快照管理里回退。
-
-虚拟机迁移和删除：直接移动文件夹或删除文件夹。
-
-### vmtools
-
-安装vmtools：（在Windows下更好的管理vm虚拟机，可以设置Windows和CentOS的共享文件夹）
-
-1. 进入centOS；
-2. 点击vm菜单的`install vmware tools`；
-   - 如果出现“客户机操作系统已将 CD-ROM 门锁定,并且可能正在使用 CD-ROM,这可能会导致客户机...”问题，建议先关机查看CD/DVD有没有选中ISO文件，如果选中了，那就进入系统再安装tools，出现这个问题点击是即可；
-3. centos会出现一个vm的安装包 xx.tar.gz，会在界面弹出提示，如果没看见，可点击取消安装，然后再次重装；
-4. 拷贝后进入主文件夹，点击其他位置，找到`/opt`目录并粘贴进去；
-5. 桌面右键打开终端，然后`cd /opt/`进入`/opt`目录，使用`tar -zxvf xx.tar.gz`解压得到tools的安装文件；
-   - 输入`tar -zxvf VM`然后按一下Tab键整个文件名就会出来了，然后回车，解压完毕；
-   - `ls`命令可以显示目录下的压缩包、文件夹等；
-6. 进入该vm解压的目录`vmware-tools-distrib`（在`/opt`目录下；）
-7. 然后执行`./vmware-install.pl`命令安装，一直回车默认，安装完成；
-8. 注意：安装vmtools需要有gcc（终端执行`gcc -v`就可验证）。
-
-共享文件夹的创建：
-
-- 先创建好文件夹；
-- 虚拟机的设置里找到选项下的共享文件夹，选择总是启用，然后添加；
-- 添加完成后在`/mnt/hgfs/`目录下可看到共享文件夹。（实际开发中，Linux系统并不是与自己用于开发的电脑在一起的，这时是通过远程方式上传或下载文件，远程方式登录-在后面）。
-
-
-
-## 远程登录到Linux
-
-工作时开发的上线项目是运行在服务器上的，需要远程登录到系统进行项目管理和开发；远程登录工具有Xshell6、Xftp6、MobaXterm_Personal等。
-
-Xshell：目前最好的远程登录到Linux系统的软件，流畅的速度并且完美解决了中文乱码问题，是一个强大的安全终端模拟软件，支持SS1、SS2，以及Windows平台的TELLNET协议；可在Windows界面下用来访问远程不同系统的服务器。
-
-登录要知道远程Linux系统的公网IP：Linux系统里执行`ifconfig`就可看到（我的是192.168.137.128）；还要测试网络是否通畅，Windows下的ping命令：测试两台机器（IP）是不是网络通畅的，`ping 另一台机器的IP`，如果出现回复则是通畅的。
-
-安装好后使用Xshell：
-
-1. 新建会话：名称可随意，主机是要登录的远程系统的IP，协议SSH，端口22；然后点击确定。
-2. 双击会话，学习中可选择一次性接收，工作中建议选择接受并保存，然后输入用户名、密码。
-
-Xftp：Windows平台的功能强大的SFTP、FTP文件传输软件，使Windows用户可以在UNIX/Linux和Windows之间安全地传输文件。
-
-安装完成好使用Xftp：
-
-1. 新建会话：称可随意，主机是要登录的远程系统的IP（192.168.137.128），协议SFTP，端口22；然后点击确定。
-2. 双击会话，学习中可选择一次性接收，工作中建议选择接受并保存，然后输入用户名、密码。
-
-# Linux目录结构
+**Linux目录结构**
 
 Linux的文件系统：采用层级式的树状目录结构，最上层是根目录`/`，然后在此目录下再创建其它的目录。
 
@@ -225,7 +54,7 @@ Linux世界里，一切皆文件！（Linux把硬件都当作文件来处理）�
 
 # CentOS7常用基本命令
 
-> 安装vim：yum install vim
+> 安装 vim：yum install vim
 
 ## vim快捷键
 
@@ -463,22 +292,29 @@ vi或vim模式切换：（`:wq`（保存并退出）、`:q`（退出）、`:!q`�
 
 ![](img/find.png)
 
+**文件查找指令：**
+
 1. find指令：
 
    - `find /home -name hello.txt`：在/home目录下按文件名查找（注意Linux里面没有后缀概念）；其他的选项都是类似的查找方式。
    - 如果查找到的文件过多，可以在最后使用`| more`进行分页查看。
    - 按文件大小进行查找，+、-、=分别表示大于、小于、等于，`find /home -size -100M`（查找小于100M的），单位有k、M、G。
+   - `find xxxx文件`，在当前目录下寻找文件。
 
 2. locate指令：
 
    - `locate 要搜索的文件`：该指令可快速定位文件路径。（第一次使用该命令前需先执行`updatedb`）
    - 安装locate指令：`yum install mlocate`。
 
-3. which指令：
+**指令查找指令：**
+
+1. which指令：
 
    - `which 指令`：查看指令在哪个目录下。
 
-4. grep指令和管道符：
+**过滤与管道：**
+
+1. grep指令和管道符：
 
    - `|`：管道符，表示将前一个命令的处理结果传递给后面的命令处理。
 
@@ -543,7 +379,7 @@ gzip（只能用来压缩文件，不能压缩目录）：
 查看：
 
 1. `ls -ahl`：可查看到文件或用户的所有者、所在组。
-2. `usermod -d 目录名 用户名 指定用户登录的初始目录`：改变用户所在组并指定用户登录后所在的工作目录（前提要有访问此目录的权限）。
+2. `usermod -d 目录名 用户名`：改变用户所在组并指定用户登录后所在的工作目录（前提要有访问此目录的权限）。
 
 ![](img/16.ls-lah.png)
 
