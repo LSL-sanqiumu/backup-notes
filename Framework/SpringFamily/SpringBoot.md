@@ -6,7 +6,7 @@ Spring Boot是由Pivotal团队提供的全新框架，其设计目的是用来�
 
 # SpringBoot的使用
 
-## 开发步骤
+## 搭建SpringBoot项目
 
 1. 创建SpringBoot项目，引入需要的场景。
 2. application.yml，根据需要进行一定的配置。
@@ -71,7 +71,6 @@ YAML 是 "YAML Ain't Markup Language"（意为 YAML 不是一种标记语言）�
 ● `key: value`：kv之间有空格；
 ● 大小写敏感；
 ● 使用缩进表示层级关系；
-● 缩进不允许使用tab，只允许空格；
 ● 缩进的空格数不重要，只要相同层级的元素左对齐即可；
 ● `#`表示注释；
 ● 字符串无需加引号，如果要加，' '与" "表示字符串内容会被转义或不转义（例如转义字符"\n"原本就是表示换行的转义字符，单引号时会被再次转义，双引号时不被转义（此时就是原来的换行））
@@ -253,6 +252,8 @@ dev-tools：ctrl + f9 重启
 
 SpringBoot项目默认情况下在classpath路径下有几个目录为**默认的静态资源存放目录** ：` /static `、`/public `、`/resources `、` /META-INF/resources`，当访问某些资源时，映射路径不经controller处理就默认来静态资源目录下寻找。
 
+**1、静态资源**
+
 原理：静态映射的是`/**`。请求进来先寻找controller是否能进行处理，不能处理的所有请求就交给了静态资源处理器来处理，如果找不到资源就报404错误。 
 
 对静态资源的设置：     
@@ -261,7 +262,7 @@ SpringBoot项目默认情况下在classpath路径下有几个目录为**默认�
   - 例1：`localhost:8888/a.png`就是在几个静态资源目录下寻找，找到就能显示a.png了；
   - 例2：`localhost:8888/r/a.png`就是在几个静态资源目录下的`r`目录下寻找，找到就能显示a.png了；
   - 例3：设置static-path-pattern: /res/**，那么就得加上res，`localhost:8888/res/r/a.png`。
-- static-locations：默认的为[classpath:/static/,classpath:/public/,classpath:/resources/,classpath:/META-INF/resources/]
+- static-locations：默认的为`[classpath:/static/,classpath:/public/,classpath:/resources/,classpath:/META-INF/resources/]`
 
 ```yaml
 spring:
@@ -273,6 +274,8 @@ spring:
       static-locations: [classpath:/newstatic/,classpath:/newtemplates/]
       #static-locations: classpath:/newstatic/
 ```
+
+**2、webjar**
 
 还支持webjar，会自动映射 /webjars/**，见https://www.webjars.org/
 
@@ -286,9 +289,11 @@ spring:
 
 访问地址：http://localhost:8080/webjars/jquery/3.5.1/jquery.js   后面地址要按照依赖里面的包路径。
 
-静态资源路径（这里说路径即目录）下的index.html可以作为欢迎页面，访问`localhost:port/`会自动跳转至这个页面，但是是在没有配置静态资源前缀的前提下。
+**3、欢迎页**
 
-静态资源路径下的favicon.ico图标可以作为页面标签图，当没有配置静态资源路径前缀的时候才有效。
+静态资源目录下的index.html可以作为欢迎页面，访问`localhost:port/`会自动跳转至这个页面，但是是在没有配置spring.mvc.static-path-pattern（静态资源访问路径前缀）的前提下。
+
+静态资源路径下的favicon.ico图标可以作为页面标签图，当没有配置静态资源访问路径前缀的时候才有效。
 
 ## 请求处理
 
@@ -499,27 +504,27 @@ public WebMvcConfigurer webMvcConfigurer(){
 
 以前使用（/getUser   获取用户     /deleteUser 删除用户    /editUser  修改用户       /saveUser 保存用户）为映射名称来表示对资源的操作。
 
-现在使用Rest风格：Rest风格是使用HTTP请求方式动词来表示对资源的操作（/user    GET-获取用户    DELETE-删除用户     PUT-修改用户  POST-保存用户），表单需要提交隐藏参数。使用Rest风格的表单和RequestMapping映射如下设置：
+现在使用Rest风格：Rest风格是使用HTTP请求方式动词来表示对资源的操作（/user    GET-获取用户    DELETE-删除用户     PUT-修改用户  POST-保存用户），表单需要提交隐藏参数。使用Rest风格的表单和RequestMapping映射如下：
 
 ```java
 public class RestController {
     @GetMapping(value = "/user")
-//    @RequestMapping(value = "/user", method = RequestMethod.GET)
+	//    @RequestMapping(value = "/user", method = RequestMethod.GET)
     public String get() {
         return "get获取用户";
     }
     @DeleteMapping("/user")
-//    @RequestMapping(value = "/user", method = RequestMethod.DELETE)
+	//    @RequestMapping(value = "/user", method = RequestMethod.DELETE)
     public String delete() {
         return "delete删除用户";
     }
     @PutMapping(value = "/user")
-//    @RequestMapping(value = "/user", method = RequestMethod.PUT)
+	//    @RequestMapping(value = "/user", method = RequestMethod.PUT)
     public String modify() {
         return "put修改用户";
     }
     @PostMapping("/user")
-//    @RequestMapping(value = "/user", method = RequestMethod.POST)
+	//    @RequestMapping(value = "/user", method = RequestMethod.POST)
     public String save() {
         return "post保存用户";
     }
@@ -545,14 +550,14 @@ public class RestController {
 </form>
 ```
 
-【注意】默认不开启Rest风格，需要手动开启，兼容的PUT、DELETE、PATCH的在表单必须是post请求，不影响表单原生get、post请求：
+【注意】默认不开启Rest风格，需要手动开启，兼容的PUT、DELETE、PATCH的在表单必须是post请求，不影响表单原生get、post请求。开启rest：
 
 ```yaml
 spring:
   mvc:
     hiddenmethod:
       filter:
-        enabled: true # 选择性开启表单rest风格
+        enabled: true # 开启表单rest风格
 ```
 
 定制`_method`：创建配置类往容器注册HiddenHttpMethodFilter组件
@@ -579,6 +584,8 @@ public class WebConfig {
     return new OrderedHiddenHttpMethodFilter();
   }
 ```
+
+
 
 请求映射原理：
 
@@ -1806,16 +1813,40 @@ static Stream<String> method() {
 
 # 依赖管理
 
+依赖管理，跳过Maven的pom.xml继承来实现，最终是通过Maven的dependencyManagement来进行依赖管理。
+
 **关于spring-boot-starter-parent：**
 
 ```xml
-<!-- spring-boot-starter-parent的父项目几乎声明了所有开发中常用的依赖的版本号 -->
+<!-- 依赖管理——方式一 -->
+<!-- spring-boot-starter-parent的父项目spring-boot-dependencies几乎声明了所有开发中常用的依赖的版本号 -->
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.5.5</version>
     <relativePath/> <!-- lookup parent from repository -->
 </parent>
+<!-- 依赖管理——方式二 -->
+<dependencyManagement>
+    <dependencies>
+        <!-- 覆盖 Spring Boot 提供的 Spring Data -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-releasetrain</artifactId>
+            <version>Fowler-SR2</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <!--  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>2.0.0.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
 ```
 
 **关于spring-boot-starter：**
@@ -2004,7 +2035,7 @@ spring.factories文件，写死了springboot启动就默认加载的所有配置
 
 ## 组件注解
 
-spring的注解：@Configuration、@Bean、@Component、@Controller、@Service、@Repository、@ComponentScan、@Import、@Conditional
+@Configuration、@Bean、（@Component、@Controller、@Service、@Repository）、@ComponentScan、@Import、@Conditional
 
 ### @Configuration
 
@@ -2023,7 +2054,7 @@ spring的注解：@Configuration、@Bean、@Component、@Controller、@Service�
 
 ### @Conditional
 
-用于类上，表示条件装配，用于满足指定条件时进行组件的注册。其有许多拓展注解，例如：
+用于类上，表示条件装配，当满足指定条件时就进行组件的注册。其有许多拓展注解，例如：
 
 - `@ConditionalOnBean`：当容器中有某个bean的时候才能执行某些操作。
 - `@ConditionalOnMissingBean`：当容器中没有某个bean的时候才能执行某些操作。
@@ -2037,7 +2068,7 @@ spring的注解：@Configuration、@Bean、@Component、@Controller、@Service�
 
 用于配置类上，当配置类生效，此注解也就生效，生效时就会通过指定的配置文件来往容器注册配置文件中定义好的组件。
 
-`@ImporeResource("classpath:beans.xml")`：通过传统的bean.xml文件来注册组件并将其注册到容器中。
+`@ImporeResource("classpath:beans.xml")`：通过传统的bean.xml文件来注册组件并将组件注册到容器中。
 
 ## 配置绑定注解
 

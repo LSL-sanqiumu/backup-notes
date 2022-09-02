@@ -1778,7 +1778,7 @@ System.out.println(maps.get(0).get("name"));
 j.batchUpdate(String sql,List<Object[]> batchArgs);
 ```
 
-# Spring声明式事务
+# 声明式事务配置
 
 事务：数据库操作基本单元，逻辑上的一组操作，对数据库数据的操作，要么都成功、要么都失败。事务操作有四个原则，ACID原则。
 

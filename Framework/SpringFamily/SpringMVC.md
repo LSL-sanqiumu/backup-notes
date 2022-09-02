@@ -1202,6 +1202,16 @@ public ModelAndView forwardTest(String name, String rage){
 }
 ```
 
+```java
+@RequestMapping(value="/forward.do")
+public String forwardTest(String name, String rage){
+    
+    return "forward:/show";
+}
+```
+
+
+
 重定向：**不经过视图解析器**；第一次请求携带的参数会被转为String，并作为第二次请求的get参数使用；（重定向是两次请求，且重定向不能定向到WEB-INF目录下的资源）
 
 ```java
@@ -1225,6 +1235,14 @@ public ModelAndView redirectTest(String name, String age){
 <h3>myname：${param.myname}</h3>
 <h3>myage数据：${param.myage}</h3>
 <h3>取参：<%=request.getParameter("myname")%></h3>
+```
+
+```java
+@RequestMapping(value="/redirect.do")
+public String redirectTest(){
+    
+    return "redirect:/hello";
+}
 ```
 
 

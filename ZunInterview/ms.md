@@ -1,3 +1,11 @@
+# 备战面试
+
+
+
+
+
+# 建议
+
 作者：小新没有蜡笔~
 链接：https://www.nowcoder.com/discuss/61438
 来源：牛客网
@@ -42,7 +50,7 @@
    6.  mysql如何解决幻读、如何解决不可重复读，了解MVCC和next-key锁 
    7.  sql优化，索引覆盖、延迟关联 
 8.  Spring   
-   1.  Spring aop的实现原理，了解cglib和jdk动态*** 
+   1.  Spring aop的实现原理，了解cglib和jdk动态代理*** 
    2.  Spring容器的生命周期 
    3.  Spring bean的声明周期 
    4.  Spring Ioc，反射机制 

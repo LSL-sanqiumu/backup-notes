@@ -273,7 +273,7 @@ exit;
 | :------------------- | :----------------------------- |
 | tinyint              | 十分小，1byte，-128~1          |
 | smallint             | 较小，2byte                    |
-| mediuint             | 中等小，3byte                  |
+| mediumint            | 中等小，3byte                  |
 | **int**              | **标准整数，4byte（常用的）**  |
 | bigint               | 较大的数据，8byte              |
 | float                | 4byte浮点数                    |
@@ -659,7 +659,7 @@ alter table 表名 comment '修改后的表的注释'; -- 修改表的注释
 alter table 表名 modify column 字段名 字段类型 comment '修改后的字段注释'; -- 修改字段的注释
 ```
 
-【注意点】：字段名用可``来包裹起来；SQL大小写不敏感，建议使用小写；所有符号都用英文下的。
+【注意点】：字段名用可``来包裹起来；SQL大小写不敏感，建议使用小写。
 
 # DML
 
@@ -681,8 +681,8 @@ insert into `表` value(数据,...);
 
 ```mysql
 -- 插入一条或多条数据
-INSERT INTO `表`(`字段`) VALUES (数据1),(数据2),(数据3),(数据4),...;
-INSERT INTO `表`(`字段1`,`字段2`,`字段3`,...) VALUES (数据1,数据2,数据3),(数据11,数据22,数据33),...; 
+insert into `表`(`字段`) VALUES (数据1),(数据2),(数据3),(数据4),...;
+insert into `表`(`字段1`,`字段2`,`字段3`,...) VALUES (数据1,数据2,数据3),(数据11,数据22,数据33),...; 
 ```
 
 将查询结果插入到一张表中：（查询到的结果要符合所要插入的表的结构）
@@ -699,7 +699,7 @@ insert into `表` select ... from ...;  -- 很少用
 2. mysql的日期时间格式有：%Y（年）、%m（月）、%d（日）、%H（时）、%i（分）、%s（秒）。
 3. 如果字符串日期格式是`%Y-%m-%d`，那就不用写函数，会自动帮转换。
 
-`date_format(Date, format)`函数：将日期转换成特定格式的字符串
+`date_format(date, format)`函数：将日期转换成特定格式的字符串
 
 ```mysql
 select date_format('2022-03-14','%Y:%m:%d');
@@ -743,8 +743,11 @@ truncate `table-name`;
 
 1. 相同点：都能删除数据，但不会影响表的结构。
 2. 不同点：
-  - truncate会重新设置自增列的计数器为0。
-  - truncate不会影响事务。
+
+     - truncate会重新设置自增列的计数器为0。
+
+     - truncate不会影响事务。
+
 
 【了解】delete删除的问题：重启数据库会出现以下现象
 
@@ -771,9 +774,7 @@ FROM table_name [as table_alias]
 	[WITH OWNERACCESS OPTION] 	
 ```
 
-## 单表查询
-
-### 简单查询
+## 简单查询
 
 ```SQL
  -- 查询指定表内所有数据
@@ -793,7 +794,7 @@ select * from `table-name` \G;
 select distinct `字段` from `table-name`;
 -- 联合多个字段来去重，distinct后指定的字段都相同时才会去重
 select distinct `字段1`,`字段2`,... from `table-name`;
--- 可以出现在函数内
+-- 可以出现在聚合函数内
 select 字段x,count(distinct `字段1`,...) from `table-name`; -- 去掉该字段重复的数据后剩下的记录条数
 ```
 
@@ -810,7 +811,7 @@ select `age`+1 as 长大一岁 from result; -- 指定字段加一后显示，不
 
 字段也可以使用数学表达式：`select name,age*12 from table_name`；（把字段看成是变量一样进行运算）
 
-### 条件查询
+## 条件查询
 
 select语句：
 
@@ -824,28 +825,28 @@ select ... where `字段` in (110,120); -- 该字段值是否有在该集合里�
 
 条件操作符：
 
-| 条件操作符          | 含义         | 描述                   |
-| :------------------ | :----------- | :--------------------- |
-| =、>、<、>=、<=     |              |                        |
-| !=、<>              | 不等于       |                        |
-| between ... and ... | 在某个闭区间 | [x，y]                 |
-| and                 | 相当于&&     | 全1为1                 |
-| or                  | 相当于\|\|   | 有1为1                 |
-| not                 | 相当于！     | 非                     |
-| is null             | 是null       | null 不能用 = 来比较   |
-| is not null         | 不是null     |                        |
-| like                | 含有某个值   | 模糊查询，结合%或_使用 |
+| 条件操作符          | 含义                 | 描述                   |
+| :------------------ | :------------------- | :--------------------- |
+| =、>、<、>=、<=     |                      |                        |
+| !=、<>              | 不等于               |                        |
+| between ... and ... | 在某个闭区间         | [x，y]                 |
+| and                 | 相当于&&             | 全1为1                 |
+| or                  | 相当于\|\|           | 有1为1                 |
+| not                 | 相当于！             | 非                     |
+| is null             | 是null               | null 不能用 = 来比较   |
+| is not null         | 不是null             |                        |
+| like                | 含有某个值，模糊查询 | 模糊查询，结合%或_使用 |
 
 | 常用于子查询         | 含义           | 描述                                                         |
 | :------------------- | :------------- | :----------------------------------------------------------- |
 | in(xx,xx,xx,...)     | 符合里面的值   | 某字段的值能对应in里面的某一个数据<br />返回true或者false    |
 | not in(xx,xx,xx,...) | 不符合里面的值 | 某字段的值不在这几个值中<br />返回true或者false              |
-| exists()             | 记录存在       | EXISTS 运算符用于判断查询子句是否有记录，<br>如果有一条或多条记录存在返回 True，否则返回 False。 |
-| not exists()         | 记录不存在     |                                                              |
+| exists()             | 记录存在       | exists 运算符用于判断查询子句是否有记录，<br>如果有一条或多条记录存在就返回 true，否则返回 false。 |
+| not exists()         | 记录不存在     | true  or false<br>select * from test where not exists(select age from test where age <> 22); |
 
 
 
-### 模糊查询
+## 模糊查询
 
 like，模糊查询，支持使用通配符`%`或`_`匹配：
 
@@ -862,7 +863,7 @@ like，模糊查询，支持使用通配符`%`或`_`匹配：
 
 
 
-### 分组查询
+## 分组查询
 
 实际的应用中，可能有这样的需求，需要先分组再对每一组的数据进行操作，这时需要使用分组查询。分组查询就是根据一个或多个字段分为一组组数据再进行查询操作（判断一个或多个字段值是否相同，如果是相同的则为一组数据并去重，不同的为另一组数据并去重），分组查询一般和分组函数结合来查询特定的数据。
 
@@ -1373,7 +1374,7 @@ create table if not exists dept(
 	deptno int(2) not null primary key,
 	dname varchar(14),
 	loc varchar(13)
-)engine=innodb default charset=utf8;
+)engine=innodb default charset=utf8mb4;
 insert into dept(deptno,dname,loc) values
 (10, 'ACCOUNTING', 'NEW YORK'),
 (20, 'RESEARCH', 'DALLAS'),
@@ -1392,7 +1393,7 @@ create table if not exists emp(
     sal double(7, 2),
     comm double(7, 2),
     deptno int(2)
-)engine=innodb default charset=utf8;
+)engine=innodb default charset=utf8mb4;
 insert into emp values
 (7369, 'SMITH', 'CLERK', 7902, '1980-12-17', 800, NULL, 20),
 (7499, 'ALLEN', 'SALESMAN', 7698, '1981-02-20', 1600, 300, 30),
@@ -1416,7 +1417,7 @@ create table if not exists salgrade (
 	grade int,
 	losal int,
 	hisal int
-)engine=innodb default charset=utf8;
+)engine=innodb default charset=utf8mb4;
 insert into salgrade values
 (1, 700, 1200),
 (2, 1201, 1400),
@@ -1435,7 +1436,75 @@ select ... from ... where ... group by ... having ... order by ... limit page,pa
 -- 从哪张表拿数据 -> 拿出哪些数据 -> 将拿出的数据分组 -> 选中数据 -> 对数据进行过滤 -> 对数据进行排序 -> 数据分页
 ```
 
+题目：
 
+1.每个部门最高薪水的人员名称
+
+2.在部门平均薪水之上的所有人员名单
+
+3.取得各个部门中员工的平均薪水等级
+
+4.全部员工中的最高薪水
+
+5.平均薪水最高的部门的编号
+
+6.平均薪水最高的部门的名称
+
+7.平均薪水等级最低的部门的名称
+
+8.找出比普通员工中最高薪水还要高的经理人
+
+9.薪水最高的前5名员工
+
+10.薪水最高的6-10名
+
+11.入职最迟的五位员工
+
+12.每个薪水等级的员工人数
+
+13.所有员工及领导的名字
+
+14.列出受雇日期早于其直接上级的所有员工编号、姓名、部门名称
+
+15.列出员工信息及员工的部门名称，同时列出那些没有员工的部门
+
+16.找出至少有5个员工的所有部门
+
+17.列出薪水比“SMITH”多的所有员工信息
+
+19.列出最低薪水大于1500的各种工作及从事此工作的雇员人数
+
+20.列出在部门“SALES”<销售部>工作的员工的姓名，假定不知道销售部门的部门编号
+
+21.列出薪水高于公司平均薪金的所有员工的名称及所在部门、上级领导、工资等级
+
+22.列出与“SCOTT”从事相同工作的所有员工及部门名称
+
+23.查出和30部门的员工的薪水相等的其他员工的姓名和薪水
+
+24.查出比30部门中最高薪水都高的其他员工的姓名、薪水和所在部门名称
+
+25.列出在每个部门工作的员工数量、平均工资和平均服务期限
+
+26.列出所有员工的姓名、部门名称和工资
+
+27.列出所有部门的详细信息和人数
+
+28.查出各种工作的最低工资及这些最低工资对应的员工、岗位
+
+29.列出各个部门MANAGER的最低薪金
+
+30.列出所有员工的年工资，按年薪从低到高排序
+
+31.求出员工领导的薪水超过3000的员工名称和领导名称
+
+32.查出带“S”字符的部门的员工工资合计情况以及部门人数
+
+33.给任职日期超过30年的员工加薪10%
+
+
+
+## 题解
 
 ### 1.每个部门最高薪水的人员名称
 
@@ -1792,7 +1861,7 @@ where sal > (select max(sal) msal from emp where deptno=30) and deptno != 30) a
 join dept d on a.deptno=d.deptno;
 ```
 
-25.列出在每个部门工作的员工数量、平均工资和平均服务期限
+### ~~25.列出在每个部门工作的员工数量、平均工资和平均服务期限~~
 
 平均服务期限？？
 
@@ -1848,7 +1917,7 @@ on e.deptno = d.deptno where d.dname like '%S%' group by d.deptno;
 update emp set sal = sal * 1.1 where datediff(now(),hiredate)/365 > 30;
 ```
 
-
+1
 
 # --------SQL end--------
 
@@ -2117,7 +2186,7 @@ SELECT * FROM md5test WHERE `name`='小明' AND pwd=md5('1233456');
 ACID，是指数据库管理系统（DBMS）在写入或更新资料的过程中，为保证事务（transaction）是正确可靠的所必须具备的四个特性：原子性（atomicity，或称不可分割性）、一致性（consistency）、隔离性（isolation，又称独立性）、持久性（durability）。
 
 1. 原子性：不可分割性，同一个事务中，所有操作要么都执行成功，要么都执行失败，以保证数据的一致性。
-   - MySQL中事务不支持原子性，如果事务中某一条SQL出错，仍然会继续向下执行其他SQL，提交后仍然会持久化。（也就是说MySQL中，如果事务中某条SQL操作错误，数据库系统不会自动执行回滚操作，而是过滤掉错误的再继续执行其他SQL，回滚操作需要）
+   - MySQL中事务不支持原子性，如果事务中某一条SQL出错，仍然会继续向下执行其他SQL，提交后仍然会持久化。（也就是说MySQL中，如果事务中某条SQL操作错误，数据库系统不会自动执行回滚操作，而是过滤掉错误的再继续执行其他SQL，回滚操作需要手动设置）
 2. 一致性：事务执行结束后，数据库的完整性约束没有被破坏，事务执行的前后都是合法的数据状态。
    - 数据库的完整性约束包括但不限于：实体完整性（如行的主键存在且唯一）、列完整性（如字段的类型、大小、长度要符合要求）、外键约束、用户自定义完整性（如转账前后，两个账户余额的和应该不变）等。
 

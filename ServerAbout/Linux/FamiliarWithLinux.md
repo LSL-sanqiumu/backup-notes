@@ -473,7 +473,7 @@ ps指令，用来参考系统中进程的执行状况、是否在执行等，可
 
 ![](img/14.psall.png)
 
-**查看父子进程**
+**查看父进程**
 
 - `ps -ef | grep redis`：以全格式查看redis进程（-e：显示所有；-f：全格式），查看进程的父进程。
 
@@ -512,19 +512,25 @@ service——服务是运行在后台的进程，通常都会监听端口来等�
 **systemctl指令：**CentOS7后很多指令都使用这个管理
 
 1. 状态管理：`systemctl [start | stop | restart | status] 服务名`，对服务进行管理(立即生效但只是暂时的)，用于开启服务、停止服务、重启服务、查看服务状态等。
+
 2. 服务查看：其管理的服务在`/usr/lib/systemd/system`目录中查看。
+
 3. 自启动服务的查看与设置：
-   1. `systemctl list-unit-files [| grep 服务名]`，查看服务开机自启动状态，可使用grep进行过滤。
-      - `systemctl list-unit-files | grep enabled`：查看所有开机自启动的服务。
-      - `systemctl list-unit-files | grep 服务名`：查看服务是不是开机自启动（enabled）。
+   1. `systemctl list-unit-files | grep enabled`：查看所有开机自启动的服务。
+      
+      `systemctl list-unit-files | grep 服务名`：查看服务是不是开机自启动（enabled）。
    2. `systemctl enable 服务名`：设置服务开机自启动（永久生效）。
    3. `systemctl disable 服务名`：停止服务开机自启动（永久生效）。
-4. **关闭防火墙服务**：（firewalld.service）
-   - `systemctl disable firewalld.service`：从开启自启动中移除。（服务名可不加.service）
-
-   - `systemctl stop firewalld.service`：关闭防火墙服务。
 
 ## 防火墙
+
+**关闭防火墙服务**：（firewalld.service）
+
+- `systemctl disable firewalld.service`：从开机自启动中移除。（服务名可不加.service）
+
+- `systemctl stop firewalld.service`：关闭防火墙服务。
+
+- `systemctl start firewalld.service`：开启防火墙服务。
 
 **firewall——用于设置防火墙服务：**（防火墙未关闭时才能设置防火墙）
 
@@ -537,12 +543,10 @@ service——服务是运行在后台的进程，通常都会监听端口来等�
 
 Windows的telnet需要在Windows功能里开启 Telnet Client。
 
-1. `systemctl start firewalld`：开启防火墙。
-2. `systemctl restart firewalld`：重启防火墙。
-3. `firewall-cmd --reload`：重载规则。
-4. `firewall-cmd --list-all`：查看已配置规则。
-5. `firewall-cmd --permanent --add-rich-rule="rule family="ipv4" source address="192.168.44.101" port protocol="tcp" port="8080" accept"`：允许该ip（192.168.44.101）访问指定端口。
-6. `firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source address="192.168.44.101" port port="8080" protocol="tcp" accept"`：移除规则。
+1. `firewall-cmd --reload`：重载规则。
+2. `firewall-cmd --list-all`：查看已配置规则。
+3. `firewall-cmd --permanent --add-rich-rule="rule family="ipv4" source address="192.168.44.101" port protocol="tcp" port="8080" accept"`：允许该ip（192.168.44.101）访问指定端口。
+4. `firewall-cmd --permanent --remove-rich-rule="rule family="ipv4" source address="192.168.44.101" port port="8080" protocol="tcp" accept"`：移除规则。
 
 
 

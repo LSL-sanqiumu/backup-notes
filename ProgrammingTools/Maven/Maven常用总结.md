@@ -15,7 +15,7 @@
 
 settings.xml里配置：
 
-- 设置本地仓库：<localRepository>D:\Environment\.m2\repository</localRepository>
+- 设置本地仓库：`<localRepository>D:\Environment\.m2\repository</localRepository>`
 - 镜像配置：
   - 使用阿里的镜像：
   
@@ -40,6 +40,34 @@ settings.xml里配置：
             <mirrorOf>*</mirrorOf>
     </mirror>
     ```
+
+```xml
+<mirrors>
+      <mirror>
+        <id>nexus-aliyun</id>
+        <mirrorOf>central</mirrorOf>
+        <name>Nexus aliyun</name>
+        <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+      </mirror>
+  </mirrors>
+ 
+  <profiles>
+         <profile>
+              <id>jdk-1.8</id>
+              <activation>
+                <activeByDefault>true</activeByDefault>
+                <jdk>1.8</jdk>
+              </activation>
+              <properties>
+                <maven.compiler.source>1.8</maven.compiler.source>
+                <maven.compiler.target>1.8</maven.compiler.target>
+                <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+              </properties>
+         </profile>
+  </profiles>
+```
+
+
 
 # pom.xml的使用
 

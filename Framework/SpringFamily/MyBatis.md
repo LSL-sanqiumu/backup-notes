@@ -1654,9 +1654,7 @@ public static void main(String[] args) {
 }
 ```
 
-`PageInfo<T> pageInfo = new PageInfo<>(List<T> list, int navigatePages)`。
-
-PageInfo常用属性：
+`PageInfo<T> pageInfo = new PageInfo<>(List<T> list, int navigatePages)`。PageInfo常用属性：
 
 1. pageNum：当前页的页码  
 2. pageSize：每页显示的条数  
@@ -1671,41 +1669,27 @@ PageInfo常用属性：
 11. navigatepageNums：导航分页的页码，\[1,2,3,4,5]
 
 PageInfo这个类里面的属性：
- `pageNum`当前页
- `pageSize`每页的数量
- `size`当前页的数量
- `orderBy`排序
- `startRow`当前页面第一个元素在数据库中的行号
- `endRow`当前页面最后一个元素在数据库中的行号
- `total`总记录数(在这里也就是查询到的用户总数)
- `pages`总页数 (这个页数也很好算，每页5条，总共有11条，需要3页才可以显示完)
- `list`结果集
- `prePage`前一页
- `nextPage`下一页
- `isFirstPage`是否为第一页
- `isLastPage`是否为最后一页
- `hasPreviousPage`是否有前一页
- `hasNextPage`是否有下一页
- `navigatePages`导航页码数
- `navigatepageNums`所有导航页号
- `navigateFirstPage`导航第一页
- `navigateLastPage`导航最后一页
- `firstPage`第一页
- `lastPage`最后一页
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+| 属性                | 说明                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| `pageNum`           | 当前页                                                       |
+| `pageSize`          | 每页的数量                                                   |
+| `size`              | 当前页的数量                                                 |
+| `orderBy`           | 排序                                                         |
+| `startRow`          | 当前页面第一个元素在数据库中的行号                           |
+| `endRow`            | 当前页面最后一个元素在数据库中的行号                         |
+| `total`             | 总记录数(在这里也就是查询到的用户总数)                       |
+| `pages`             | 总页数 (这个页数也很好算，每页5条，总共有11条，需要3页才可以显示完) |
+| `list`              | 结果集                                                       |
+| `prePage`           | 前一页                                                       |
+| `nextPage`          | 下一页                                                       |
+| `isFirstPage`       | 是否为第一页                                                 |
+| `isLastPage`        | 是否为最后一页                                               |
+| `hasPreviousPage`   | 是否有前一页                                                 |
+| `hasNextPage`       | 是否有下一页                                                 |
+| `navigatePages`     | 导航页码数                                                   |
+| `navigatepageNums`  | 所有导航页号                                                 |
+| `navigateFirstPage` | 导航第一页                                                   |
+| `navigateLastPage`  | 导航最后一页                                                 |
+| `firstPage`         | 第一页                                                       |
+| `lastPage`          | 最后一页                                                     |
