@@ -584,6 +584,8 @@ public class MyController {
 
 ### 自动全局接收
 
+接收域中的值。
+
 （HttpServletRequest request、HttpServletResponse response、HttpSession session，详细使用见Servlet）这三个由框架自动完成赋值，如下声明后就可以直接调用它们的方法来获取数据了（request可以获取请求域中的数据、cookie、session等请求数据，response是响应的数据，session是一个会话中的数据（比如当前页面转发到另一个页面，这是可实现跨页面传送数据））。
 
 ```java

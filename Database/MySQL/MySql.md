@@ -1,6 +1,6 @@
 # MySql
 
-## MySql概述
+## 概述
 
 JavaEE是为了企业级Java开发准备的，WEB分为：前端（页面渲染，数据显示）、后台（连接数据库JDBC，链接前端（控制，控制视图跳转，给前端传递数据））、数据库（存储数据）。
 
@@ -307,7 +307,7 @@ date和datetime的区别：
 - MySQL短日期默认格式：`%Y-%m-%d`。
 - MySQL长日期默认格式：`%Y-%m-%d %h-%i-%s`。
 
-MySQL当前时间：`now()`获取系统当前时间（`%Y-%m-%d  %H:%i:%s`、`YYYY-MM-DD  HH-mm-ss`）。
+MySQL当前时间：`now()`获取系统当前时间（`%Y-%m-%d  %H:%i:%s`）。
 
 ### 空与bit—2：
 

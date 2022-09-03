@@ -1,40 +1,56 @@
 # SpringBoot
 
-Spring Boot是由Pivotal团队提供的全新框架，其设计目的是用来简化新Spring应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。
+Spring Boot是由Pivotal团队提供的全新框架，其设计目的是用来简化Spring应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。
 
 简而言之，SpringBoot项目也就是一个Maven项目，只不过其是spring-boot-starter-parent的依赖和其他的场景启动器、依赖组成，由spring-boot-starter-parent来进行依赖的管理，spring-boot-starter来提供自动配置等。Spring Boot框架的核心就在于依赖管理和自动配置。
 
-# SpringBoot的使用
+# 搭建项目步骤
 
-## 搭建SpringBoot项目
+**1、创建Maven项目**
 
-1. 创建SpringBoot项目，引入需要的场景。
-2. application.yml，根据需要进行一定的配置。
-3. 各种整合操作。
+**2、获取依赖管理**
 
-**手动搭建SpringBoot环境：**
-
-搭建SpringBoot项目可以通过IDEA的SpringBoot向导来搭建，这里采用手动搭建方式。
-
-**1、创建Maven项目，然后进行以下操作：**
-
-场景启动器的引入：（starter场景的artifactId见https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter。）
+项目配置继承spring-boot-starter-parent，获得依赖管理：
 
 ```xml
-<!-- pom.xml中引入父依赖 -->
 <parent>
+    <!-- spring-boot-starter-parent继承了spring-boot-dependencies，包含了常用场景的所有依赖声明 -->
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.6.5</version>
     <relativePath/> <!-- lookup parent from repository -->
 </parent>
+```
+
+或者通过`<dependencyManagement>`获取依赖管理：
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <!-- 从 Spring Boot 导入依赖管理 -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>2.6.5</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+**3、场景启动器的引入**
+
+（starter场景的artifactId见https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter）
+
+```xml
 <!-- pom.xml中引入场景启动器：spring-boot-starter是必须的 -->
 <dependencies>
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter</artifactId>
     </dependency>
-    <!-- 测试依赖 -->
+    <!-- 测试场景引入 -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-test</artifactId>
@@ -44,38 +60,110 @@ Spring Boot是由Pivotal团队提供的全新框架，其设计目的是用来�
 </dependencies>
 ```
 
-按以下示例创建好主启动类：
+Starter 是一组惯例依赖描述资源，starter 包含了许多您需要用于使项目快速启动和运行、并且需要一组受支持的可传递依赖关系的依赖。简而言之，starter就是用于引入某组依赖的，实际引入的依赖由引入的starter决定。
+
+场景启动，可以使用默认的依赖版本，也可以自定义导入的依赖的版本，两种自定义需要引入的依赖版本号的方式如下：
+
+```xml
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>5.1.46</version> <!--  修改版本号的方法1：利用maven的就近依赖修改版本 -->
+</dependency>
+<!-- 修改版本号的方法2：依赖不指定版本号，在properties指定 -->
+<properties>
+    <java.version>1.8</java.version>
+    <mysql.version>5.1.46</mysql.version>
+</properties>
+```
+
+**4、按以下示例创建好主启动类：**
 
 ```java
 @SpringBootApplication
 public class Review01QuickstartApplication {
+    // 启动项目，初始化Spring容器
     public static void main(String[] args) {
         SpringApplication.run(Review01QuickstartApplication.class, args);
     }
 }
 ```
 
-**2、用yml文件或properties文件进行配置**
+**5、用yml文件或properties文件进行配置** （resources目录下创建application.properties或application.yml、application.yaml配置文件）
 
-resources目录下创建application.properties或application.yml配置文件。
+三种配置文件优先级：`application.properties  >  application.yml  >  application.yaml`；注意，三种配置文件都会生效，只会根据优先级覆盖相同的配置，不相同的配置全部保留并生效。
 
-**3、利用SpringBoot整合MyBatis、Spring、SpringMVC等**
+**6、整合MyBatis、Spring、SpringMVC等常用技术来进行项目开发**
 
 
 
-## 关于yml配置文件
+# 关于yml配置文件
 
 YAML 是 "YAML Ain't Markup Language"（意为 YAML 不是一种标记语言）的递归缩写。在开发的这种语言时，YAML 的意思其实是："Yet Another Markup Language"（仍是一种标记语言）。 非常适合用来做以数据为中心的配置文件。
 
-基本语法：
+## 基本语法
+
 ● `key: value`：kv之间有空格；
 ● 大小写敏感；
-● 使用缩进表示层级关系；
+● 使用缩进表示层级关系，同层级左侧对齐，只允许使用空格，不允许使用tab键；
 ● 缩进的空格数不重要，只要相同层级的元素左对齐即可；
 ● `#`表示注释；
-● 字符串无需加引号，如果要加，' '与" "表示字符串内容会被转义或不转义（例如转义字符"\n"原本就是表示换行的转义字符，单引号时会被再次转义，双引号时不被转义（此时就是原来的换行））
+● 字符串无需加引号，如果要加，' '与" "表示字符串内容会被转义或不转义（如果有转义字符就使用双引号）
 
-数据类型：
+获取yaml配置文件中配置的值：
+
+```java
+// 使用@Value获取单个数据：@Value("${一级属性名.二级属性名......}")
+@Value("${likes[0]}")
+private String v;
+// 获取所有的数据，会自动将配置中数据封装进该对象
+@Autowired
+Environment env;
+```
+
+yaml配置文件中的变量引用：
+
+```yaml
+baseDir: D:\learning-notes
+notesDir: ${baseDir}\notes\test.md
+```
+
+将yaml配置文件中的数据封装到一个类对象中：
+
+```yaml
+datasource:
+  passwd: 123456
+  user: root
+```
+
+```java
+@Component
+@ConfigurationProperties(prefix = "datasource")
+public class DataSource {
+    private String user;
+    private String passwd;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
+    }
+}
+```
+
+
+
+## 数据类型
 
 ```yaml
 # 字面量写法：单个的、不可再分的值。date、boolean、string、number、null
@@ -97,7 +185,7 @@ k:
 ```
 
 ```yaml
-# yaml表示对象
+# 使用yaml表示对象——示例
 person:
   userName: zhangsan
   boss: false
@@ -125,7 +213,7 @@ person:
     health: [{name: mario,weight: 47}]
 ```
 
-配置处理器：
+配置处理器来加入提示功能：
 
 ```xml
 <!-- 配置处理器的依赖，使用yml配置时提示功能 -->       
@@ -153,13 +241,15 @@ person:
 </build>
 ```
 
-## 最佳实践
+# 最佳实践
+
+最佳实践：
 
 1. 根据所需引入starter场景和其他依赖；
    - 引入starter场景的artifactId见【https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter】。
 2. 【选做】可以查看自动配置（XxxAutoConfigure）了哪些功能：
    - 方法一：自己分析自动配置类（引入场景对应的自动配置一般都生效了）。
-   - 方法二：配置文件中debug=true开启自动配置报告（Negative（不生效）\ Positive（生效））。
+   - 方法二：配置文件中`debug=true`开启自动配置报告（Negative（不生效）\ Positive（生效））。
 3. 是否需要定制或修改一些功能：
    - 参照文档修改配置文件 [Common Application Properties (spring.io)](https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#application-properties)；
    - 自己分析xxxxProperties绑定了哪些可以在配置文件中配置的。
@@ -168,7 +258,7 @@ person:
    - @Bean、@Component等；
    - 自定义器  **XXXXXCustomizer**。
 
-## 开发技巧
+开发技巧：
 
 idea中搜索安装lombok插件，并在springboot项目中引入Lombok插件来简化JavaBean：
 
@@ -239,7 +329,11 @@ dev-tools：ctrl + f9 重启
 
 使用SpringInitializr：项目初始化向导，选择场景并快速创建spring boot项目。
 
-# web开发场景操作
+# web开发场景
+
+## 启用web场景
+
+web场景导入：
 
 ```xml
 <dependency>
@@ -247,6 +341,20 @@ dev-tools：ctrl + f9 重启
     <artifactId>spring-boot-starter-web</artifactId>
 </dependency>
 ```
+
+web场景的自动配置：
+
+1. 内容协商视图解析器和BeanName视图解析器。
+2. 静态资源（包括webjars）。
+3. 自动注册 `Converter，GenericConverter，Formatter `。
+4. 支持 `HttpMessageConverters` 。
+5. 自动注册 `MessageCodesResolver` （国际化用）。
+6. 静态index.html 页支持。
+7. 自定义 `Favicon`  。
+8. 自动使用 `ConfigurableWebBindingInitializer` ，（DataBinder负责将请求数据绑定到JavaBean上）。
+
+
+
 
 ## 静态资源
 
@@ -258,11 +366,11 @@ SpringBoot项目默认情况下在classpath路径下有几个目录为**默认�
 
 对静态资源的设置：     
 
-- static-path-pattern：设置静态资源的映射前缀（默认是`static-path-pattern: /**`）
+1. static-path-pattern：设置静态资源的映射前缀（默认是`static-path-pattern: /**`）
   - 例1：`localhost:8888/a.png`就是在几个静态资源目录下寻找，找到就能显示a.png了；
   - 例2：`localhost:8888/r/a.png`就是在几个静态资源目录下的`r`目录下寻找，找到就能显示a.png了；
-  - 例3：设置static-path-pattern: /res/**，那么就得加上res，`localhost:8888/res/r/a.png`。
-- static-locations：默认的为`[classpath:/static/,classpath:/public/,classpath:/resources/,classpath:/META-INF/resources/]`
+  - 例3：设置`static-path-pattern: /res/**`，那么就得加上res，`localhost:8888/res/r/a.png`。
+2. static-locations：默认的为`[classpath:/static/,classpath:/public/,classpath:/resources/,classpath:/META-INF/resources/]`
 
 ```yaml
 spring:
@@ -293,9 +401,19 @@ spring:
 
 静态资源目录下的index.html可以作为欢迎页面，访问`localhost:port/`会自动跳转至这个页面，但是是在没有配置spring.mvc.static-path-pattern（静态资源访问路径前缀）的前提下。
 
-静态资源路径下的favicon.ico图标可以作为页面标签图，当没有配置静态资源访问路径前缀的时候才有效。
+**4、自定义favicon**
 
-## 请求处理
+静态资源路径下的 favicon.ico 图标可以作为页面标签图，当没有配置静态资源访问路径前缀的时候才有效。
+
+```yaml
+spring:
+  mvc:
+    static-path-pattern: /res/**     # 静态资源访问路径前缀，会导致favicon失效
+```
+
+
+
+## 请求路径前缀
 
 前端控制器的请求映射路径最前面的`/`不再是代表`localhost:port/webappName/`，而是代表`localhost:port/`。
 
@@ -307,15 +425,15 @@ server:
 		content-path: /webapp
 ```
 
+请求参数处理，具体见SpringMVC。
 
+## 使用注解接收参数
 
-### 普通参数接收
-
-- @PathVariable：获取路径变量，可以指定key来获取某一个，也可以直接获取全部变量值。
-- @RequestParam：获取请求参数。
-- @CookieValue：获取cookie。
-- @RequestBody：获取请求体，post请求才有。
-- @RequestHeader：获取请求头：
+1. @PathVariable：获取路径变量，可以指定key来获取某一个，也可以直接获取全部变量值。
+2. @RequestParam：获取请求参数。
+3. @CookieValue：获取cookie。
+4. @RequestBody：获取请求体参数，post请求才有。
+5. @RequestHeader：获取请求头：
 
 ![](imgs/boot-imgs/1.requestheader.png)
 
@@ -462,49 +580,24 @@ public Map<String, Object> test(@MatrixVariable(value = "age", pathVar = "path1"
 
 @ModelAttribute：获取
 
-### 复杂参数接收
 
-**Map**、**Model（map、model里面的数据会被放在request的请求域（跳转前放入）  相当于request.setAttribute）**、**RedirectAttributes（ 重定向携带数据）**、**ServletResponse（response）**、Errors/BindingResult、SessionStatus、UriComponentsBuilder、ServletUriComponentsBuilder。
 
-### 自定义对象参数
+## Rest风格请求
 
-数据绑定：请求处理方法形参是对象时，表单提交的数据会自动和对象属性进行绑定。
+![](imgs/boot-imgs/4.rest1.png)
 
-- WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name)；WebDataBinder ：web数据绑定器，将请求参数的值绑定到指定的JavaBean里面；
-- WebDataBinder 利用它里面的 Converters 将请求数据转成指定的数据类型。再次封装到JavaBean中；
-- GenericConversionService：在设置每一个值的时候，找它里面的所有converter那个可以将这个数据类型（request带来参数的字符串）转换到指定的类型（JavaBean -- Integer）
-  byte ===> file
-
-```java
-// 自定义数据绑定：这里自定义绑定value值`name,age`封装成cat对象
-@Bean
-public WebMvcConfigurer webMvcConfigurer(){
-    return new WebMvcConfigurer(){
-        @Override
-        public void addFormatters(FormatterRegistry registry) {
-            registry.addConverter(new Converter<String, Cat>() {
-                @Override
-                public Cat convert(String source) {
-                    if (!StringUtils.isEmpty(source)) {
-                        Cat cat = new Cat();
-                        String[] split = source.split(",");
-                        cat.setName(split[0]);
-                        cat.setAge(Integer.parseInt(split[1]));
-                        return cat;
-                    }
-                    return null;
-                }
-            });
-        }
-    };
-}
-```
-
-### Rest风格请求
+![](imgs/boot-imgs/4.rest2.png)
 
 以前使用（/getUser   获取用户     /deleteUser 删除用户    /editUser  修改用户       /saveUser 保存用户）为映射名称来表示对资源的操作。
 
-现在使用Rest风格：Rest风格是使用HTTP请求方式动词来表示对资源的操作（/user    GET-获取用户    DELETE-删除用户     PUT-修改用户  POST-保存用户），表单需要提交隐藏参数。使用Rest风格的表单和RequestMapping映射如下：
+现在使用Rest风格：Rest风格——使用HTTP请求方式动词来表示对资源的操作（/user    GET-获取用户    DELETE-删除用户     PUT-修改用户  POST-保存用户），表单需要提交隐藏参数。核心Filter；HiddenHttpMethodFilter，rest：
+
+- 用法： 表单method=post，隐藏域 _method=put。
+
+- SpringBoot中手动开启。
+
+
+使用Rest风格的表单和RequestMapping映射如下：
 
 ```java
 public class RestController {
@@ -574,7 +667,7 @@ public class WebConfig {
 }
 ```
 
-关于rest风格的原理，见该类：
+**关于rest风格的原理**，见该类：
 
 ```java
   @Bean
@@ -585,11 +678,13 @@ public class WebConfig {
   }
 ```
 
+1. 表单提交会带上**_method=PUT**  （name=value）。
+2. 请求过来就会被HiddenHttpMethodFilter拦截，如果请求正常，并且是POST ：
+  - 获取到**_method**的值。兼容以下请求；**PUT**.**DELETE**.**PATCH**
+  - **原生request（post），包装模式requesWrapper重写了getMethod方法，返回的是传入的值。**
+  - **过滤器链放行的时候用wrapper。以后的方法调用getMethod是调用requesWrapper的。**
 
 
-请求映射原理：
-
-所有的请求映射都在HanderMapping中...
 
 ## 响应处理
 
@@ -908,46 +1003,40 @@ public class MyExceptionHandler implements HandlerExceptionResolver {
 
 Servlet、Filter、Listener
 
-# 数据操作
+# 数据操作场景
 
-## 使用jdbc场景
+## 整合jdbc
 
 ### 操作步骤
 
 **1.jdbc场景导入和数据库驱动导入：**
 
 ```xml
-<!-- 导入场景和驱动包 -->
+<!-- jdbc -->
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-jdbc</artifactId>
-    <scope>test</scope>
 </dependency>
+<!-- mysql 驱动 -->
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
-    <version>5.1.46</version> <!-- 利用maven的就近依赖修改版本 -->
 </dependency>
-<!-- 修改版本号的方法2：依赖不指定版本号，在properties指定 -->
-<properties>
-    <java.version>1.8</java.version>
-    <mysql.version>5.1.46</mysql.version>
-</properties>
 ```
 
 jdbc场景导入内容有：HikariCP（数据库连接池）、spring-jdbc、spring-tx。但没有导入数据库驱动（因此需要另外声明依赖导入），为什么呢？因为官方不知道要使用哪些数据库，所以数据库驱动没有安装进去，但数据库驱动的版本仲裁还是存在的。
 
 jdbc场景的自动配置有：
 
-1. DataSourceAutoConfiguration ： 数据源的自动配置：
-   - 修改数据源相关的配置：**spring.datasource**；
-   - 数据库连接池的配置，是当自己容器中没有DataSource才自动配置的；
+1. DataSourceAutoConfiguration，数据源的自动配置：
+   - 数据库连接池的配置，是当自己容器中没有DataSource就会自动配置。
+   - 在配置文件中可通过 **spring.datasource** 修改数据源相关的配置。
    - **底层配置好的连接池是：HikariDataSource**。
-2. DataSourceTransactionManagerAutoConfiguration： 事务管理器的自动配置；
+2. DataSourceTransactionManagerAutoConfiguration： 事务管理器的自动配置。
 
-3. JdbcTemplateAutoConfiguration： springboot自带的**JdbcTemplate**，其自动配置，可以来对数据库进行crud：
+3. JdbcTemplateAutoConfiguration，SpringBoot自带的**JdbcTemplate**，其自动配置好了，可以用来对数据库进行crud：
    - 可以修改这个配置项@ConfigurationProperties(prefix = "spring.jdbc") 来修改JdbcTemplate；
-   - @Bean @Primary    JdbcTemplate；容器中有这个组件。
+   - `@Bean @Primary    JdbcTemplate;`，说明容器中已经有JdbcTemplate这个组件了。
 4. JndiDataSourceAutoConfiguration： jndi的自动配置；
 
 5. XADataSourceAutoConfiguration： 分布式事务相关的。
@@ -956,8 +1045,6 @@ jdbc场景的自动配置有：
 
 ```yaml
 spring:
-  mvc:
-    static-path-pattern: /resource/**
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
@@ -989,11 +1076,11 @@ public class JdbcTest {
 
 ### 使用其他连接池
 
-如果不使用默认的数据源，配置其他的数据库连接池，以druid数据库连接池为例，两种配置方式：
+如果不使用JDBC默认的数据库连接池，而是配置其他的数据库连接池，以druid数据库连接池为例，有两种配置方式：
 
-**自定义引入：**
+**方式一：自定义引入：**
 
-1.导入依赖：
+1、导入依赖：
 
 ```xml
 <dependency>
@@ -1003,7 +1090,7 @@ public class JdbcTest {
 </dependency>
 ```
 
-2.往容器注册组件，容器中存在数据源时，就不会使用默认的数据源。
+2、往容器注册组件，容器中存在数据源时，就不会使用默认的数据源。
 
 ```java
 @Component
@@ -1019,7 +1106,7 @@ public class MyDataSources {
 }
 ```
 
-3.yml中配置：
+3、yml中配置：
 
 ```yaml
 spring:
@@ -1033,9 +1120,9 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
 ```
 
-**starter方式引入：**
+**方式二：starter方式引入：**
 
-1.声明导入场景：
+1、声明导入场景：
 
 ```xml
 <dependency>
@@ -1045,9 +1132,9 @@ spring:
 </dependency>
 ```
 
-2.配置：
+2、配置：
 
-引入数据源场景后，就可以直接在yml配置文件配置了；如果要使用 druid数据库连接池的功能，可以在yaml中对druid进行配置，如何配置见：[github.com](https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter)。
+引入数据源场景后，就可以直接在yml配置文件配置了；如果要使用 druid数据库连接池的其他功能，可以在yaml中对druid进行配置，如何配置见：[github.com](https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter)。
 
 ```yaml
 spring:
@@ -1095,9 +1182,9 @@ class SpringbootFileApplicationTests {
 }
 ```
 
-## 整合mybatis
+## 整合MyBatis
 
-### **1.整合步骤：**
+### **1.整合步骤**
 
 参考官方：[GitHub - mybatis/spring-boot-starter: MyBatis integration with Spring Boot](https://github.com/mybatis/spring-boot-starter)
 
@@ -1110,19 +1197,29 @@ class SpringbootFileApplicationTests {
     <artifactId>mybatis-spring-boot-starter</artifactId>
     <version>2.2.0</version>
 </dependency>
+<!-- mysql 驱动 -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid-spring-boot-starter</artifactId>
+    <version>1.1.17</version>
+</dependency>
 ```
 
-引入场景做了的自动配置如下：
+引入mybatis-spring-boot-starter场景，所做了的自动配置如下：
 
-- 导入了jdbc、mybatis-spring、spring-tx、HikariCP等。
-- SqlSessionFactory、SqlSessionFactoryBean：自动配置好；
-- DataSource：数据源，由jdbc和连接池操作可以配置要使用的数据源决定；
+- 自动导入了jdbc、mybatis-spring、spring-tx、HikariCP等。
+- 自动配置好 SqlSessionFactory、SqlSessionFactoryBean。
+- DataSource：数据源，由jdbc和连接池操作可以配置要使用的数据源决定。
 - MybatisProperties：mybatis配置绑定类；
 - SqlSessionTemplate：自动配置有，组合了SqlSession。
 
 2、数据源配置
 
-具体见jdbc场景和连接池操作，然后配置：
+具体需要依赖见jdbc场景和连接池操作，然后配置：
 
 ```yaml
 spring:
@@ -1164,25 +1261,34 @@ class SpringbootFileApplicationTests {
 }
 ```
 
-### 2.1使用-配置文件版
+### 2.1开发-配置文件版
 
-1.准备好SQL映射文件和接口：
+**1、映射器：**
 
-XxxMapper.xml：SQL映射文件，namespace绑定xxxMapper接口，SQL语句id要和对应接口方法的名字一致：
+dao接口：
+
+```java
+@Mapper
+public interface DeptMapper {
+    String getAllDept();
+}
+```
+
+XxxMapper.xml，SQL映射文件，namespace绑定xxxMapper接口，SQL语句id要和对应接口方法的名字一致：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lsl.dao.InfoMapper">
-    <select id="getStudent" resultType="com.lsl.pojo.Student">
-        select name, age, school, nowadays from info where id=#{id}
+<mapper namespace="com.lsl.dao.DeptMapper">
+    <select id="getAllDept" resultType="java.lang.String">
+        select dname from dept where deptno=30
     </select>
 </mapper>
 ```
 
-2.准备mybatis-config全局配置文件和在yaml配置文件中的配置设置：
+**2、准备mybatis-config全局配置文件和在yaml配置文件中的配置设置：**
 
 mybatis-config.xml：
 
@@ -1212,24 +1318,40 @@ mybatis:
 
 【注意】：这个`config-location: classpath:mybatis/mybatis-config.xml`和`configuration`不能共存，要么使用mybatis-config.xml来配置，要么使用configuration（建议：使用configuration来进行mybatis全局配置，如上）。
 
-3.测试
+**3、测试**
+
+```java
+@SpringBootTest
+public class Junit5Test {
+    
+    @Autowired
+    DeptMapper deptMapper;
+
+    @Test
+    public  void testDept(){
+        System.out.println(deptMapper.getAllDept());
+    }
+}
+```
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-### **2.2使用-注解版：**
+### **2.2开发-注解版**
 
-`@Mapper`：用于接口映射器；语句相关：`@Insert`、`@Select`、 @Options、...
+单独设置：`@Mapper`：用于接口映射器；语句相关：`@Insert`、`@Select`、 @Options、...
 
-批量设置：`@MapperScan("com.lsl.xxx")`，用于主配置类上，用来扫描Mapper接口所在包，然后才能对Mapper接口进行装配。
+批量设置：`@MapperScan("com.lsl.xxx")`，用于主配置类上，用来扫描Mapper接口所在包，这样就不用为每个mapper接口都添加@Mapper注解。
 
 ```java
 @Mapper
-public interface AnnoInfoMapper {
-    @Select(value = "select name,age,school,nowadays from info where id=#{id}")
-    public Student getByIds(Long id);
+public interface DeptMapper {
+    @Select(value = "select dname from dept where deptno=30")
+    String getAllDept();
 }
-// 然后可以在service直接注入AnnoInfoMapper来调用方法了
+// 然后就可以直接注入使用了
 ```
+
+返回自增主键值：
 
 ```xml
 <!-- useGeneratedKeys="true" keyProperty="id" 的作用在于插入完成后返回数据库中自增的id值，只对insert有效 -->
@@ -1237,41 +1359,44 @@ public interface AnnoInfoMapper {
 <insert id="addStudent" useGeneratedKeys="true" keyProperty="id">
     insert into info(name,age,school) values (#{name},#{age},#{school})
 </insert>
+```
 
-<!-- 上面SQL语句的注解方式 -->
-@Insert(value = "insert into info(name,age,school) values (#{name},#{age},#{school})")
-@Options(useGeneratedKeys = true, keyProperty = "id")
-public boolean addStudent(Student student);
-<!-- 最后返回的student的id属性值不再是null，如下可测试 -->
-@PostMapping(value = "/add")
-@ResponseBody
-public Student addStudent(Student student) {
-studentService.addStudent(student);
-return student;
+```java
+public interface TestMapper{
+    // 注解方式 
+	@Insert(value = "insert into info(name,age,school) values (#{name},#{age},#{school})")
+	@Options(useGeneratedKeys = true, keyProperty = "id")
+	public boolean addStudent(Student student);
 }
 ```
 
+
+
 关于混合模式的使用：注解与映射文件相结合（简单的方法就使用注解，复杂的SQL方法就使用映射文件）。
 
-### 总结：最佳实战：
+
+
+### 总结：最佳实战
 
 步骤：
 
-1. 引入mybatis-starter；
-2. 在application.yaml中配置，指定mapper-location位置、数据源配置即可；
-3. 编写Mapper接口并标注@Mapper注解；
-4. 简单方法直接使用注解方式；
-5. 复杂方法编写mapper.xml进行绑定映射；
+1. 引入mybatis-starter。
+2. 在application.yaml中配置，指定mapper-location位置、数据源配置即可。
+3. 编写Mapper接口并标注@Mapper注解。
+4. 简单方法直接使用注解方式。
+5. 复杂方法编写mapper.xml进行绑定映射。
 6. 在主配置类使用@MapperScan("com.atguigu.admin.mapper") 简化，其他的接口就可以不用标注@Mapper注解。
+
+
 
 ## 整合MybatisPlus
 
 MyBatis-Plus（简称 MP）是一个 MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。
 [简介 | MyBatis-Plus (baomidou.com)](https://baomidou.com/guide/)，建议idea中安装 MybatisX 插件 。
 
-**整合步骤：**
+**整合步骤如下：**
 
-1.引入场景、驱动依赖：
+1、引入场景、驱动依赖：
 
 ```xml
 <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
@@ -1279,6 +1404,11 @@ MyBatis-Plus（简称 MP）是一个 MyBatis 的增强工具，在 MyBatis 的�
     <groupId>com.baomidou</groupId>
     <artifactId>mybatis-plus-boot-starter</artifactId>
     <version>3.4.3.4</version>
+</dependency>
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid-spring-boot-starter</artifactId>
+    <version>1.1.17</version>
 </dependency>
 <dependency>
     <groupId>mysql</groupId>
@@ -1295,62 +1425,105 @@ mybatis-plus-boot-starter的自动配置：
 - `@Mapper`接口标注的接口会被自动扫描生效。（建议使用`@MapperScan()`）
 - 数据源是从容器中获取，给容器放啥数据源就用啥数据源。
 
-2.数据源的配置：和jdbc、数据库连接池的配置一样
+2、数据源的配置：
 
-**开发使用：**
+```yaml
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sql_exer?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+# 开启日志功能
+logging:
+  level:
+    com.lsl.mappper: debug
+```
 
-1. 创建对应表的实体类，实体类和表的名称映射默认开启驼峰命名方式；
+**开发使用步骤如下：**
 
-2. 映射接口继承BaseMapper接口：
+1、创建对应表的实体类，实体类和表的名称映射默认开启驼峰命名方式。
 
-   ```java
-   // 泛型指定的类型，也决定了SQL语句调用哪个表，如下的接口就是操作`test`表
-   // 继承后就可使用接口中的方法进行操作了，也可以再使用映射文件拓展其他的复杂的SQL语句
-   @Mapper
-   public interface TestMapper extends BaseMapper<Test> {
-   
-   }
-   ```
+```java
+@Component
+public class Dept {
+    // 如果主键字段不是叫id，那么就必须使用@TableId来指定主键
+    @TableId
+    private int deptno;
+    private String dname;
+    private String loc;
+    // getter、setter、构造器
+}
+```
 
-3. 测试：
+2、映射接口继承BaseMapper接口。
 
-   ```java
-   @Slf4j
-   @SpringBootTest
-   class SpringbootFileApplicationTests {
-       @Autowired
-       TestMapper testMapper;
-       @Test
-       void plus(){
-           Test test = testMapper.selectById(1);
-           System.out.println(test.getAcct());
-       }
-   }
-   ```
+```java
+// 泛型指定的类型，也决定了SQL语句调用哪个表，如下的接口就是操作`test`表
+// 继承后就可使用接口中的方法进行操作了，也可以再使用映射文件拓展其他的复杂的SQL语句
+@Mapper
+public interface TestDao extends BaseMapper<Dept> {
+}
+```
 
-4. 如果需要其他的SQL语句，可以在`resources`目录下新建`mapper`文件夹，该文件夹下的SQL映射文件会被自动扫描生效。
+3、测试：
+
+```java
+@SpringBootTest
+public class Junit5Test {
+    @Autowired
+    TestDao testDao;
+    @Test
+    void plus(){
+        Dept dept = testDao.selectById(30);
+        System.out.println(dept);
+    }
+}
+```
+
+4、如果需要其他的SQL语句，可以在`resources`目录下新建`mapper`文件夹，该文件夹下的SQL映射文件会被自动扫描生效。
+
+
 
 ## 整合Redis
 
-**1.场景开启：**
+**1、场景开启：**
 
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-redis</artifactId>
 </dependency>
+<!-- jackson 2.x 相关依赖 -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.12.0</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.12.0</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+    <version>2.12.0</version>
+</dependency>
 ```
 
-**2.配置redis地址和端口：**
+**2、配置redis地址和端口：**
 
 ```yaml
 spring:
   redis:
     host: 192.168.137.129
     port: 6379
+    password:             # 如果有特殊字符(@等)记得加双引号
 ```
 
-**3.往容器添加该组件：**用于自定义序列化方式，几乎包含了所有场景。
+**3、往容器添加该组件：**用于自定义序列化方式，几乎包含了所有场景。
 
 ```java
 @Configuration
@@ -1379,7 +1552,7 @@ public class RedisConfig {
 }
 ```
 
-**4.测试：**
+**4、测试：**
 
 ```java
 @Slf4j
@@ -1397,9 +1570,9 @@ class SpringbootFileApplicationTests {
 }
 ```
 
-**切换使用jedis：**（jedis就是基于java语言的redis客户端，集成了redis的命令操作，提供了连接池管理。）
+**切换使用jedis：**（jedis就是基于java语言的redis客户端，集成了redis的命令操作，提供了连接池管理。默认使用的是lettuce）
 
-1.添加依赖
+1、添加依赖
 
 ```xml
 <dependency>
@@ -1408,17 +1581,18 @@ class SpringbootFileApplicationTests {
 </dependency>
 ```
 
-2.配置：
+2、配置：
 
 ```yaml
 spring:
     redis:
       host: 192.168.137.129
       port: 6379
+      password:
       client-type: jedis
 ```
 
-3.测试
+3、测试
 
 ```java
 @Slf4j
@@ -1427,6 +1601,7 @@ class SpringbootFileApplicationTests {
     @Test
 	void jedisTest(){
     	Jedis j = new Jedis("192.168.137.129",6379);
+        // j.auth(""); // 如果redis有秘密
     	System.out.println(j.ping("连接成功"));
 	}
 }
@@ -1789,27 +1964,28 @@ static Stream<String> method() {
 
 **application-profile功能使用：**
 
-- 默认配置文件：application.yaml，在任何时候都会加载。
+1. 默认配置文件：application.yml，在任何时候都会加载。
 
-- 环境配置文件指定的规定：
+2. 环境配置文件指定的规定：
 
-  - application-{env}.yaml，环境标识名`{env}`随便写。
+  - application-{env}.yml，环境标识名`{env}`随便写。
 
-- 激活指定环境
+3. 激活指定环境
 
-  - 在默认配置文件中激活，激活方式`spring.profiles.active=环境标识名`。
-  - 命令行激活：java -jar xxx.jar --**spring.profiles.active=Xxx环境标识名 --xxxx=xxx**
-    - 命令行启动SpringBoot项目jar包文件时可以指定配置文件中的配置项的值，运行时会覆盖原来的值。
+  - 在默认配置文件中激活，激活方式——`spring.profiles.active=环境标识名`。
+  - 命令行激活：`java -jar xxx.jar --spring.profiles.active=Xxx环境标识名 --server.port=8880 --xxx=xxx`
+    
+    （命令行启动SpringBoot项目jar包文件时可以指定配置文件中的配置项的值，运行时会覆盖原来的值）
 
-- 指定好环境配置，默认配置与环境配置会同时生效，当有同名配置项时，profile配置优先（环境配置中优先）。
+4. 指定好环境配置，默认配置与环境配置会同时生效，当有同名配置项时，profile配置的优先（环境配置中的比默认配置文件的优先）。
 
-- 也可以在默认配置中配置多个环境：
+5. 也可以在默认配置中配置使用多个环境：
 
   ```properties
   spring.profiles.group.myprod[0]=pdd
   ```
 
-
+properties配置也同理。
 
 # 依赖管理
 
@@ -2114,3 +2290,6 @@ public class Config {
 
 }
 ```
+
+# 原理
+

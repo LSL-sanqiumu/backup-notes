@@ -225,10 +225,9 @@ vi或vim模式切换：（`:wq`（保存并退出）、`:q`（退出）、`:!q`�
 1. find指令：
 
    - `find /home -name hello.txt`：在/home目录下按文件名查找（注意Linux里面没有后缀概念）；其他的选项都是类似的查找方式。
+   - `find xxxx文件或目录`，在当前所在目录下寻找文件或目录，不会进当前目录下的目录里寻找。
    - 如果查找到的文件过多，可以在最后使用`| more`进行分页查看。
    - 按文件大小进行查找，+、-、=分别表示大于、小于、等于，`find /home -size -100M`（查找小于100M的），单位有k、M、G。
-   - `find xxxx文件`，在当前目录下寻找文件。
-
 2. locate指令：
 
    - `locate 要搜索的文件`：该指令可快速定位文件路径。（第一次使用该命令前需先执行`updatedb`）
@@ -373,10 +372,10 @@ vi或vim模式切换：（`:wq`（保存并退出）、`:q`（退出）、`:!q`�
 3. Linux虚拟机和VMnet8的IP相似，在linux虚拟机`ping 192.168.2.1`可以通，在Windows上ping Linux的也会通。
 4. Windows的无线局域网适配器 WLAN的IPv4 地址是192.168.101.8，以太网适配器通过无线局域网适配器，然后再走网关、路由器等，就可以访问外网了。
 
-## 查看ip配置
+## 查看虚拟机ip配置
 
-- Windows下：`ipconfig`。
-- Linux下：`ifconfig`。
+1. Windows下：`ipconfig`。
+2. Linux下：`ifconfig`。查看云服务器公网：`curl ifconfig.me`、`curl cip.cc`。
 
 ![](img/10.ens33.png)
 
@@ -390,7 +389,7 @@ vi或vim模式切换：（`:wq`（保存并退出）、`:q`（退出）、`:!q`�
 
 ping用于测试主机之间的网络连通性：`ping 目的主机`，例如`ping www.baidu.com`。
 
-## 静态ip配置
+## 虚拟机静态ip配置
 
 1. 自动配置，会自动获取到IP地址，避免IP冲突（IP可能会变化，系统界面的网络连接设置可设置为自动）
 
@@ -581,9 +580,9 @@ RPM  是Red-Hat Package Manager（红帽软件包管理器）的缩写，用于�
 
 rpm包查询：
 
-1. `rpm -qa [| grep/more xx]`：查询已安装的rmp包。
-2. `rpm -qi 软件包名`：查询已经安装了的软件包的信息，例如`rpm -qi firefox`。
-3. `rpm -ql 软件包名`：显示软件包中的全部文件。
+1. `rpm -qa [| grep/more xx]`：查询已安装的rmp包。（query all）
+2. `rpm -qi 软件包名`：查询软件包的信息，例如`rpm -qi firefox`。（query info）
+3. `rpm -ql 软件包名`：显示软件包中的全部文件。（query list）
 4. `rpm -qf 文件全路径名`：查询某目录下文件所属的软件包。
 
 rpm包卸载：

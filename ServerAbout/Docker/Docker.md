@@ -174,7 +174,9 @@ docker三件套：
 
 `docker run -it --name=myUbuntu ubuntu bash`：使用`--name`指定该容器名字。
 
-**2、罗列正在运行的容器：**`docker ps [选项]`
+**2、查看容器：**`docker ps [选项]`
+
+罗列正在运行的容器：`docker ps`
 
 OPTIONS说明（常用）：
 
@@ -443,32 +445,8 @@ tomcat8-jdk8：
 高级安装：
 
 1. 宿主机创建目录：`mkdir -p /app/redis`，在该目录修改redis.conf配置文件。
-2. `docker run -p 6379:6379 --name myredis0 --privileged=true -v /app/redis/redis.conf:/etc/redis/redis.conf -v /app/redis/data:/data -d redis:6.0.8 redis-server /etc/redis/redis.conf`。
-3. ` docker exec -it 运行着Rediis服务的容器ID redis-cli`。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+2. `docker run -p 6379:6379 --name myredis0 --privileged=true -v /app/redis/redis.conf:/etc/redis/redis.conf -v /app/redis/data:/data -d redis:6.0.8 redis-server /etc/redis/redis.conf`。（me：`docker run -p 6379:6379 --name myredis --privileged=true -v /mydata/redis/conf/redis.conf:/etc/redis/redis.conf -v /mydata/redis/data:/data -d redis:6.0.8 redis-server /etc/redis/redis.conf`）
+3. ` docker exec -it 运行着Redis服务的容器ID redis-cli`。
 
 
 
