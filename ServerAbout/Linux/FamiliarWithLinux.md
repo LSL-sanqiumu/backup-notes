@@ -603,6 +603,23 @@ yum：一个shell前端软件包管理器，基于rpm包管理，能够从指定
 
 2. `yum install xxx`：用于从服务器下载并安装指定的软件。
 
+| 命令                           | 说明                     |
+| ------------------------------ | ------------------------ |
+| **yum check-update**           | 列出所有可更新的软件清单 |
+| **yum update**                 | 更新所有软件             |
+| **yum install <package_name>** | 仅安装指定的软件         |
+| **yum update <package_name>**  | 仅更新指定的软件         |
+| **yum list**                   | 列出所有可安裝的软件清单 |
+| **yum remove <package_name>**  | 删除软件包               |
+| **yum search < keyword >**     | 查找软件包               |
+
+ 清除缓存命令：
+
+- **yum clean packages**：清除缓存目录下的软件包
+- **yum clean headers**：清除缓存目录下的 headers
+- **yum clean oldheaders**：清除缓存目录下旧的 headers
+- **yum clean, yum clean all (= yum clean packages; yum clean oldheaders)** ：清除缓存目录下的软件包及旧的 headers
+
 # 熟悉服务器日志
 
 **日志管理**
@@ -644,14 +661,6 @@ rsyslogd服务：
 内存日志：
 
 ![](img/内存日志.png)
-
-
-
-
-
-# 熟悉搜索
-
-
 
 # 熟悉应用部署
 
@@ -924,31 +933,31 @@ Linux采用“载入”的处理方法，Linux将一个分区和一个目录联�
 
 ![](img/shell.png)
 
-1. shell脚本一般以.sh结尾（Linux没有后缀的概念）。
+1、shell脚本一般以.sh结尾（Linux没有后缀的概念）。
 
-2. shell脚本文件的格式：固定开头`#!/bin/bash`
+2、shell脚本文件的格式：固定开头`#!/bin/bash`
 
   ```shell
 #!/bin/bash 
 脚本命令
   ```
 
-3. shell脚本的注释：单行注释`#`，多行注释`:<<!  !`，多行注释开头和结束符要单独一行。
+3、shell脚本的注释：单行注释`#`，多行注释`:<<!  !`，多行注释开头和结束符要单独一行。
 
-4. 要赋予脚本权限，`chmod u+o hello.sh`。
+4、要赋予脚本权限，`chmod u+o hello.sh`。
 
-5. 脚本执行方式：
+5、脚本执行方式：
 
-  - 给予了脚本可执行权限：直接在终端输入相对路径或绝对路径，回车即可。
-  - `sh 脚本`：这种情况可以不加权限就可以执行。
+- 给予了脚本可执行权限：直接在终端输入脚本文件相对路径或绝对路径，然后回车即可执行。
+- `sh 脚本`：这种情况可以不加权限就可以执行。
 
 ## shell变量
 
 系统变量和用户自定义变量：
 
-1. 系统变量：$HOME、$PATH、$SHELL、$USER等，可使用`echo 系统变量`输出变量值；`set`命令可查看shell中所有的变量。
+1、系统变量：$HOME、$PATH、$SHELL、$USER等，可使用`echo 系统变量`输出变量值；`set`命令可查看shell中所有的变量。
 
-2. 自定义变量：
+2、自定义变量：
 
   - ```bash
     #!/bin/bash 
@@ -969,8 +978,9 @@ Linux采用“载入”的处理方法，Linux将一个分区和一个目录联�
 
 位置参数变量：
 
-1. 执行脚本时可以从命令行传入参数给脚本：例如`./myshell.sh 100 200 300 ...`，可传入多个变量值。
-2. 脚本内接收传入变量：
+1、执行脚本时可以从命令行传入参数给脚本：例如`./myshell.sh 100 200 300 ...`，可传入多个变量值。
+
+2、脚本内接收传入变量：
 
   - `$n`：拿到某个传入参数，n为自然数，$0是命令本身，$1-$9代表参数1-9，如果10个以上，则使用大括号：`${10}`等。
   - `$*`：拿到所有传入的参数，把传入的参数看作是一个整体。
@@ -1116,9 +1126,9 @@ getSUM $n1 $n2
 
 ## shell编程案例
 
-1. 凌晨2：:3备份数据库到`/data/backup/db`；
-2. 备份开始被备份结束要有提示信息
-3. 备份后文件要求以备份时间为文件名，并打包成.tar.gz的形式
+1. 凌晨2、3点备份数据库到`/data/backup/db`；
+2. 备份开始、备份结束要有提示信息
+3. 备份后文件要求以备份时间为文件名，并打包成`.tar.gz`的形式
 4. 备份的同时检查是否有十天前备份的数据库文件，如果有就删除
 
 ```bash
@@ -1134,10 +1144,10 @@ DATABASE=mysqltest
 # 备份数据库
 mysqldump -u${DB_USER} -p${DB_PW} --host=${HOST} -q -R --databases ${DATABASE} | gzip > ${BACKUP}/$DATETIME.sql.gz
 cd ${BACKUP}
-tar -zxvf $DATETIME.tar.gz ${DATABASE}
+tar -zcvf $DATETIME.tar.gz ${DATABASE}
 # 删除备份目录
 rm -rf ${BACKUP}/$DATETIME
-
+# 删除十天前备份的数据
 find ${BACKUP} -atime +10 -name ".tar.gz"
 echo "备份数据库${DATABASE}成功"
 ```
