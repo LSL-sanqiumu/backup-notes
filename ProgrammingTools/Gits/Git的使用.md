@@ -16,8 +16,11 @@ Git，分布式版本控制系统，由Linux用C语言创建的。
 1. `git config --global user.name "Your Name"`：设置全局用户名。
 2. `git config --global user.email "email@example.com"`：设置全局email地址。
 3. 注意`git config`命令的`--global`，表示你这台机器上所有的Git仓库都会使用这个配置，也可以对某个仓库指定不同的用户名和Email地址，指定的方法——进入要单独设置的仓库的.git文件夹后运行下面的命令：
-  - git config user.name "Your Name"
-  - git config user.email "email@example.com"
+
+     - git config user.name "Your Name"
+
+     - git config user.email "email@example.com"
+
 
 查看用户名和email地址：
 
@@ -36,9 +39,8 @@ Git，分布式版本控制系统，由Linux用C语言创建的。
 
 仓库创建步骤：（都是在运行GitBash出现的命令行窗口中执行指令）
 
-1. 创建仓库目录：找到合适的位置创建一个空目录，创建空目录命令：`mkdir 目录名称`。
-2. 初始化仓库：进入仓库目录，然后执行`git init`命令把这个目录变成Git可以管理的仓库，仓库就创建完毕了。
-3. 说明：仓库创建完毕会在仓库目录下出现一个.git目录，这个目录是Git用来跟踪管理版本库的，没事千万不要手动修改这个目录里面的文件，不然改乱了，就把Git仓库给破坏了，该目录默认情况下是隐藏的。
+1. 找到合适的位置创建一个空目录。
+2. 进入仓库目录，然后执行**`git init`**命令把这个目录变成Git可以管理的仓库，仓库创建完毕。
 
 # 文件提交
 
@@ -394,23 +396,34 @@ Git有一种称为rebase的操作，有人把它翻译成“变基”。
 
 # 标签管理
 
-**创建标签的几种操作：**
+**标签概述：**
 
-1. 切换到要打标签的分支，`$ git tag <name>`（默认是的HEAD）。
-2. 使用commit id来打上标签：`$ git tag <name> commid-id`。
-3. 创建带说明的标签：`$ git tag -a <name> -m "..." commit-id`。
+1. 标签就相当于版本库的一个快照，实际是指向commit的一个指针（与分支的区别是分支可以移动，而tag不能）。
+2. tag就是一个让人容易记住的有意义的名字，它跟某个commit绑在一起。
+3. 常用于版本发布时打上标签。
+
+**创建、查看标签：**
+
+| 命令                                   | 说明                                    |
+| -------------------------------------- | --------------------------------------- |
+| `git tag tagName`                      | 在当前分支创建标签                      |
+| `git tag tagName commid-id`            | 使用commit id来打上标签                 |
+| `git tag -a <name> -m "..." commit-id` | 为commit id所对应commit创建带说明的标签 |
+| `git show tagName `                    | 查看某个标签的信息                      |
+| `git tag`                              | 列出所有标签                            |
 
 **【注意】：**
 
 1. 标签不是按时间顺序列出，而是按字母排序的。
-2. 可以用`git show <tagname(标签名)>`查看标签信息；`git tag` 查看所有标签。
 3. 标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，那么在这两个分支上都可以看到这个标签。
 
 **操作标签：**
 
-1. 本地标签删除：`$ git tag -d <tagname>`
-2. 推送标签到远程：`git push origin <tagname>`
-3. 删除远程标签：先删除本地的，然后从远程删除`$ git push origin :refs/tags/<tagname>`
+| 命令                                 | 说明                               |
+| ------------------------------------ | ---------------------------------- |
+| `git tag -d tagName`                 | 本地标签删除                       |
+| `git push origin tagName`            | 推送标签到远程                     |
+| `git push origin :refs/tags/tagName` | 先删除本地的标签，然后再删除远程的 |
 
 **小结:**
 
