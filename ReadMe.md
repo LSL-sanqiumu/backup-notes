@@ -8,7 +8,7 @@ Database——数据库系统——关系型数据库、非关系型数据库
 
 Framework——框架——Spring家族、日志框架
 
-ProgrammingLanguages——编程语言——Java等
+ProgrammingLanguages——编程语言——Java、C、Go等
 
 ProgrammingTools——编程工具——IDE、Git、maven等
 

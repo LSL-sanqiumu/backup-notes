@@ -1516,7 +1516,7 @@ select deptno,max(sal) from emp group by deptno;
 ②然后将取得的结果联合员工表，找出每个部门薪水最高的：
 
 ```mysql
-select e.ename,e.sal 
+select e.ename,e.sal
 from (select deptno,max(sal) maxsal from emp group by deptno) as t join emp as e 
 on t.deptno = e.deptno and t.maxsal=e.sal;
 ```
