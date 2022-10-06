@@ -16,8 +16,4 @@ ServerAbout——服务器端相关——Linux、tomcat、nginx、k8s
 
 ProgrammingTools——项目记录
 
-1.不骄不躁的心态
-2.认识自己，自己和自己比
-3.建立终生学习的思维
-4.成长型思维
-5.出“淤泥”而不染
+专注并坚持之~
