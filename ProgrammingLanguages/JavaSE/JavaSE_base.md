@@ -1722,7 +1722,8 @@ try{
 ......
 finally {
     // finally可写可不写
-	// finally内的是一定会执行的代码（尽管catch中也存在异常或try、catch里有返回值也会被执行）
+    // finally内的是一定会执行的代码（尽管catch中也存在异常或try、catch里有返回值也会被执行）
+    // 如果在try之前就出现异常或终止或try里强制退出()，finally就不会被执行到
 }
 ```
 
@@ -2416,3 +2417,55 @@ Model、View、Controller概述：
 - 模型层（Model）：指从现实世界中抽象出来的对象模型，是应用逻辑的反应；它封装了数据和对数据的操作，是实际进行数据处理的地方（模型层与数据库才有交互）。
 - 视图层（View）：是应用和用户之间的接口，它负责**将应用显示给用户**和**显示模型的状态**。
 - 控制器（Controller）：控制器负责视图和模型之间的交互，控制对用户输入的响应、响应方式和流程；它主要负责两方面的动作，一是把用户的请求分发到相应的模型，二是把模型的改变及时地反映到视图上。
+
+# 单例设计模式
+
+## 饿汉式
+
+```java
+public class SingleObj {
+    
+    private static SingleObj singleObj = new SingleObj();
+
+    public static SingleObj getSingleObj(){
+        return singleObj;
+    }
+}
+```
+
+
+
+## 懒汉式
+
+```java
+public class SingleObj {
+
+    private static SingleObj singleObj = null;
+
+    public static SingleObj getSingleObj(){
+        if (singleObj == null) {
+            singleObj = new SingleObj();
+        }
+        return singleObj;
+    }
+}
+```
+
+线程安全：多线程操作时几乎同时调用一个get方法，那么就有可能导致多个if判断为true，就有可能多次new。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

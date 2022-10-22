@@ -81,7 +81,7 @@ docker三件套：
 
 3. 安装gcc、gcc++：`yum -y install gcc`、`yum -y install gcc-c++`。
 
-**安装：**
+**安装Docker：**
 
 1. 通过仓库[Docker’s repositories](https://docs.docker.com/engine/install/centos/#install-using-the-repository) 来下载，便于更新和升级，推荐的方法。步骤如下：
 
@@ -158,7 +158,7 @@ docker三件套：
 
 **1、新建并启动容器：**`docker run [OPTIONS] 镜像名 [COMMAND] [ARG...]`
 
-常用OPTION说明：
+常用OPTIONS说明：
 
 - `--name="容器新名字"`：为容器指定一个名称；`-d`：后台运行容器并返回容器ID，也即启动守护式容器(后台运行)。
 
@@ -180,27 +180,28 @@ docker三件套：
 
 OPTIONS说明（常用）：
 
-1. `-a`：列出当前所有正在运行的容器和历史上运行过的。
-2. `-l `：显示最近创建的容器。
-3. `-n N`：显示最近N个创建的容器。
-4. `-q `：静默模式，只显示容器编号。
+- `-a`：列出当前所有正在运行的容器和历史上运行过的。
+- `-l `：显示最近创建的容器。
+- `-n N`：显示最近N个创建的容器。
+- `-q `：静默模式，只显示容器编号。
 
 **3、退出容器的两种方式：**
 
-1. `exit`：run容器后，执行exit退出时容器会停止，容器停止并不代表容器被删除。
-2. `ctrl + p + q`：run容器后，快速执行这三个键退出容器时容器不会停止。
+- `exit`：run容器后，执行exit退出时容器会停止，容器停止并不代表容器被删除。
+- `ctrl + p + q`：run容器后，快速执行这三个键退出容器时容器不会停止。
 
-**4、启动已经停止的容器：**`docker start 容器ID或容器名称`。
+**4、启动与停止**
 
-**5、重启容器：**`docker restart 容器ID或容器名称`。
+- 启动已经停止的容器：`docker start 容器ID或容器名称`。
+- 重启容器：`docker restart 容器ID或容器名称`。
+- 停止容器：`docker stop 容器ID或容器名称`。
+- 强制停止容器：`docker kill 容器ID或容器名称`。
 
-**6、停止容器：**`docker stop 容器ID或容器名称`。
+**5、删除已经停止的容器：**
 
-**7、强制停止容器：**`docker kill 容器ID或容器名称`。
+- `docker rm 容器ID`（一次性删除多个：`docker rm -f $(docker ps -a -q)`或`docker ps -a -q | xargs docker rm`）。
 
-**8、删除已经停止的容器：**`docker rm 容器ID`（一次性删除多个：`docker rm -f $(docker ps -a -q)`或`docker ps -a -q | xargs docker rm`）。
-
-**9、非常重要：**
+**6、非常重要：**
 
 1. 要注意的是Docker容器后台运行，必须要有一个前台进程，容器运行命令如果不是一直挂起的命令那就会自动退出，这是因为Docker的机制问题。因此启动守护式容器（后台运行容器）的最佳解决方案就是将要运行的程序以前台进程的形式运行（常见的是命令行模式）
 
@@ -212,24 +213,26 @@ OPTIONS说明（常用）：
    docker run -d ubuntu
    ```
 
-2. 查看docker容器日志：`docker logs 容器ID或容器名称`。
+2. 查看：
 
-3. 查看容器内运行程序：`docker top 容器ID或容器名称`。
+   1. 查看docker容器日志：`docker logs 容器ID或容器名称`。
 
-4. 查看容器内部细节：`docker inspect 容器ID或容器名称`。
+   2. 查看容器内运行程序：`docker top 容器ID或容器名称`。
 
-5. 重新进入正在运行的容器并以命令行交互：
+   3. 查看容器内部细节：`docker inspect 容器ID或容器名称`。
+
+3. **重新进入正在运行的容器并以命令行交互：**
 
    1. `docker exec -it 容器ID或容器名称 交互/bin/bash等`。
    2. `docker attach 容器ID或容器名称`。
    3. 两个命令的区别：attach直接进入容器启动命令的终端，不会启动新的线程，使用exit退出时会导致容器停止；exec是在容器中打开新的终端，并且可以启动新的线程，使用exit退出不会导致容器停止。
 
-**10：将容器内文件拷贝到主机：**`docker cp 容器ID:容器内文件绝对路径 目的主机绝对路径`。`docker cp 目的主机绝对路径 容器ID:容器内文件绝对路径`——从主机拷贝到容器内。
+**7、将容器内文件拷贝到主机：**`docker cp 容器ID:容器内文件绝对路径 目的主机绝对路径`。`docker cp 目的主机绝对路径 容器ID:容器内文件绝对路径`——从主机拷贝到容器内。
 
-**11：导入和导出容器：**
+**8、导入和导出容器：**
 
-1. `docker export 容器ID > 文件名.tar或文件名.tar.gz `：导出容器为镜像，之后可根据该镜像文件恢复容器。
-2. `cat 文件名.tar | docker import - 镜像用户/镜像名:镜像版本号`：根据镜像文件恢复容器。
+- `docker export 容器ID > 文件名.tar或文件名.tar.gz `：导出容器为镜像，之后可根据该镜像文件恢复容器。（导出）
+- `cat 文件名.tar | docker import - 镜像用户/镜像名:镜像版本号`：根据镜像文件恢复容器。（恢复）
 
 # Docker镜像
 
