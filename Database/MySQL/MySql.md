@@ -221,6 +221,34 @@ default-character-set=utf8mb4
 10. 关闭防火墙：`systemctl stop firewalld`、`systemctl disable firewalld.service`。
 11. SQL连接。
 
+### 乌班图下安装MySQL
+
+1、更新仓库
+
+```mysql
+sudo apt update
+```
+
+2、安装
+
+```mysql
+sudo apt-get install mysql-server mysql-client
+```
+
+3、检查安装
+
+```mysql
+sudo netstat -tap | grep mysql
+```
+
+4、登录MySQL：第一次登录要设置数据库密码
+
+```mysql
+mysql -u root -p
+```
+
+
+
 
 
 ## 数据库基本命令
