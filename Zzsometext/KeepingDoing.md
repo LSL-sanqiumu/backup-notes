@@ -618,3 +618,209 @@ Chinese schools are producing a nation of Shereshevskiis, students with photogra
 同时，我们要面对的挑战是：在经历挫折、伤痛等之后，是否仍然保持纯真的热情去接纳、去学习，而不会把以防御或躲避的姿态来保护自己？
 
 我们能不能放下再前进？有时只是需要捅破一层薄如蝉翼的借口。
+
+
+
+# 自己
+
+**绝大多数的大学生都是被大学给废掉的！**
+
+**说句难听的，大学育人其实就是大学废人的一个过程！**
+
+前两天看了《上海交通[大学生存手册](https://www.zhihu.com/search?q=大学生存手册&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2838420931})》，看完之后，毛骨悚然。
+
+里面一开始就花费了大量的笔墨表达了一个惊世骇俗的观点：
+
+**国内绝大部份大学的的本科教学体系早已崩溃，而一群充满着[求知欲](https://www.zhihu.com/search?q=求知欲&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2838420931})，朝气蓬勃的年轻人，却深信不疑地把自己的未来和人格交给大学来塑造。**
+
+说好的大学育人，也就变成了大学废人。
+
+## 01
+
+国内[本科教育](https://www.zhihu.com/search?q=本科教育&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2838420931})体系的崩溃之一：
+
+**学生的个人成长与学校毫无关系，没有人会真正去关心一名学生这四年会成为一个什么样的人。**
+
+领导不会，因为他要时刻管好科研实验室，争做一流大学；
+
+教授不会，因为他要发表足够的期刊论文，满足学院要求。
+
+相比于去教几百个本科生如何学好一门知识，管理好实验室的硕士博士，更能带动学校的发展。
+
+那谁又会去真的在乎一名本科生的未来和发展呢？
+
+对于学校和老师来说，搞科研、发期刊才是主要任务，至于上课教学，不过是个不需要怎么负责的副业罢了。
+
+于是学校使用着早就该被淘汰的老教材，老师每天按部就班地念着PPT。
+
+至于能不能学好，那完全就是学生自己的问题了。
+
+因为就算讲的是天书，也总会有一两个用功的学生能搞明白其中的含义。
+
+既然有人能明白，那你就能明白，不明白就说明是你的问题。
+
+你不够用功，或者你不够聪明。
+
+而本科生真正值得学校关心的，只有就业率。
+
+因为这是本科生唯一与学校利益挂钩的指标。
+
+于是，到了大四，学校会给你各种洗脑，先找工作，再谈其他。
+
+学校深知自己教出来的学生几斤几两，所以哪怕是份月薪两三千的工作，领导也会天天催促你赶快签合同。
+
+这其实就相当于变相承认，自己教育了四年的学生就只值这个价。
+
+## 02
+
+国内本科教育体系的崩溃之二:
+
+**对学生学习成果的评判标准无用且死板。**
+
+学校检验一名学生学习成果的标准，是综测成绩和[期末考试](https://www.zhihu.com/search?q=期末考试&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2838420931})。
+
+于是我们总是要浪费宝贵的时间参加一些毫无意义的活动，总是会看到每到期末图书馆自习室就天天爆满。
+
+然后学校会大力宣传，巴不得让全世界都知道：
+
+“你看！我们学校的学生多努力！”
+
+但是就像是《上海交通大学生存手册》说的那样：
+
+> **我们耗费了大量的时间和精力掌握的那些考点、技巧，在真正的知识殿堂里根本登不上[大雅之堂](https://www.zhihu.com/search?q=大雅之堂&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2838420931})。哪怕我们特征值求得再熟练，积分积得再复杂，中国的[载人飞船](https://www.zhihu.com/search?q=载人飞船&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2838420931})也不会因此而顺利上天。**
+
+之前看到过一篇关于中日教育对比的文章：
+
+其中，日本的历史老师给学生布置了一道这样的题目：
+
+> 日本跟中国100年打一次仗。19世纪，日本跟中国打了一场日清战争（我们叫[甲午中日战争](https://www.zhihu.com/search?q=甲午中日战争&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2838420931})）；
+> 20世纪，打了一场日中战争（我们叫[抗日战争](https://www.zhihu.com/search?q=抗日战争&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2838420931})）。
+> 如果21世纪日中再次开战，你觉得是什么时候？原因是什么？日本赢的话，能赢在什么地方？输会输在什么地方？
+
+抛开别的因素不谈，单看这道题，如果是咱们的老师来出的话会怎么问？
+
+> 甲午战争是哪一年爆发的？
+> 签了什么条约？
+> 割了哪里的土地？
+> 赔了多少钱？
+> ……
+
+明明是百度随手就能搜出来的信息，我们却在比谁能记得更多更准，然后把这个过程叫做学习，把这些信息叫做知识。
+
+但是就算能记成千上万条这样的知识，出了学校之后，还有什么价值呢？
+
+就算你是过目不忘的学霸，还能有百度记得多记得准吗？
+
+于是在不合理的本科教育体系下，大学课堂就变成了这个样子：
+
+**老师在讲台上毫无感情地念着PPT，学生在下面睡觉玩手机，好像所有人都在按部就班地走过场。**
+
+**于是，老师在假教学，学生在假学习，双方都心知肚明，谁也不戳破谁。**
+
+但是最终损害的，还是学生四年的青春与梦想。
+
+## 03
+
+其实说白了，本科是通识化教育，学校制定统一的教学培养计划，也**只是设立了一个大学生废掉的底线而已。**
+
+每个学院每个系都有成百上千的学生，每个人都有不同的基本素养，不同的思想观念，不同的目标方向。
+
+而一套统一的教学培养计划又怎么可能让每个人都能有所成就。
+
+就像是食堂师傅的[大锅菜](https://www.zhihu.com/search?q=大锅菜&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2838420931})，怎么可能能满足每个人的口味，他**只能做到让大部分人不会觉得那么难吃而已。**
+
+想要吃到最符合自己口味的菜品，只能依靠自己，而不是别人。
+
+同样，想要在大学真正的学有所成，也只能依靠自己。
+
+比如：
+
+比起在课堂上听那些毫无感情的ppt朗读，不如直接去网上或线下学习真正的知识；
+
+比起参加一些毫无营养的活动和会议，不如去报名一个真正有含金量的竞赛。
+
+**当我们真正不被分数所裹挟时，我们才有可能学到真正的知识，而不是那些百度随手就能搜到的信息。**
+
+**到那时，我们才是真的学有所成，而不是浪费四年却只得到一张代表你在这待过四年的纸。**
+
+# 那些
+
+作者：叶藏
+ 链接：https://www.zhihu.com/question/267094863/answer/498697830
+ 来源：知乎
+ 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+6:30前起，22:30前熄灯
+
+早晨不接触任何杂乱信息，微信QQ全退，保证学习效率
+
+再忙也要午睡30min+ 读课外书半小时
+
+每早拟定计划 听[英语](https://www.zhihu.com/search?q=英语&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A498697830})+预习
+
+争取在高中前涉足大部分领域 已经打卡了心理学 艺术 [二战史](https://www.zhihu.com/search?q=二战史&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A498697830}) 明朝史 哲学 乐理 [罗马史](https://www.zhihu.com/search?q=罗马史&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A498697830})
+
+还想看经济金融[摄影世界](https://www.zhihu.com/search?q=摄影世界&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A498697830})史
+
+偏爱心理学 看了很多相关入门书籍 这也是我今后的目标吧
+
+每年至少五本英文原版小说
+
+晨跑40分钟 保持每日运动量 争取从体育不及格到体考拿A
+
+每天都把没完成的计划写在便签纸上
+
+无抖音快手无综艺无追剧 非假期无动漫无电影
+
+平时唯一消遣大概只有古筝和吉他 古筝中音业余九级两年前就过了 目前吉他四级 只在假期学
+
+ 
+
+初一的时候心思不在学习上 凭着严格的家教和一点小聪明竟然也堪堪在年段前20
+
+其实人醒悟过来就是一瞬的事
+
+现在想起初一的自己都觉得可惜
+
+在这种十八线小县城都不能考上前十 真的无以为傲
+
+ 
+
+初一上册期末段19 下册段6
+
+现在初二 稳在段前5
+
+ 
+
+有用计时器 大概每天10h+的学习（不完全是课内学习）
+
+我想比所有人更优秀 想要走向更好的未来
+
+作业不多就买练习册刷题 记忆力不好每天复习背诵笔记 不够聪明就拼命整理收集题型请教老师
+
+很累 很充实 很幸福
+
+ 
+
+我想 人生最重要的 大概就是做到自己最想要做的事 用自己喜欢的方式生活 
+
+喜欢文学 喜欢心理学 喜欢旅游 喜欢和志趣相投的人在一起
+
+就算只是为了这些 也要拼命的努力啊 走出这个小城 看到另一个世界
+
+我不敢说自己有多努力 只能回答 尽力
+
+ 
+
+ 
+
+今年13 
+
+[编辑于 2019-01-12 16:55](file://www.zhihu.com/question/267094863/answer/498697830)
+
+
+
+
+
+
+
