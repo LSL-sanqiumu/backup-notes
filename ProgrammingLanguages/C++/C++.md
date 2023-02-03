@@ -80,6 +80,12 @@ int main() {
 2. `std`：命名空间，`std`指出cout、endl是定义在名为 std 的命名空间中的、是来自 std 命名空间中的。
 3. `::`：作用域运算符，用于指出使用命名空间中的哪个名字，如果作用域操作符左侧为空则默认在全局作用域请求数据。
 
+```c++
+while(std::cin >> xxx){   //  退出该循环：回车后按Ctrl + Z 后再按回车
+    
+}
+```
+
 
 
 ## 内置类型
@@ -338,6 +344,8 @@ ref = &i;       // 因为是指针的引用，直接对引用赋值相当于对p
 
 ## const限定符
 
+### const
+
 const限定的变量的值经初始化后其值不能再改变，const限定的内部对象必须被初始化，可以使用变量来初始化但只是值的拷贝而不是指向关系。
 
 ```c++
@@ -435,15 +443,20 @@ p2 = p3;       // 正确int* 可以转为 const int*
 			  // 对常量对象取地址也是底层const
 ```
 
-**`constexpr`和常量表达式:（▲可选）**
+### constexpr和常量表达式
 
-1. 常量表达式：指值不会改变，且在编译过程中就能得到计算结果的表达式。（比如字面值、常量值运算）
+1. 常量表达式：**指值不会改变，且在编译过程中就能得到计算结果的表达式**。（比如字面值、常量值运算）
 2. `C++11`新标准规定，允许将变量声明为`constexpr`类型以便由编译器来验证变量的值是否是一个常量的表达式。声明为constexpr的变量一定是常量并且必须使用常量表达式来初始化。
 
 ```c++
 constexpr int num = 12;
 constexpr int val = num + 1;
 constexpr int v = size();   //  当 size()是一个constexpr函数时才正确
+
+// 初始值是字面值常量，但是数据类型不是const int，还是可以被重新赋值，所以不是常量表达式
+int val = 12;   
+//  具体值在编译过程中不知道，运行后才知道，但如果get_size()是一个constexpr函数，那么才会是常量表达式
+const int sz = get_size();   
 ```
 
 字面值类型可以使用constexpr，比如算术类型、指针、引用。
@@ -648,7 +661,7 @@ using std::string;
 
 使用=号来初始化的方式成为拷贝初始化，其他的称为直接初始化。
 
-输入流is、输出流os、string s，操作说明：
+字符串操作说明：（os——输出流、is——输入流、string s）
 
 | string操作     | 说明                                                         |
 | -------------- | ------------------------------------------------------------ |
@@ -709,7 +722,7 @@ string s6 = "s4" + "," + s5;   // 报错 ：+不能添加两个指针
 string s6 = "s4" + ("," + s5); // 相当于string temp= "," + s5;  s6 =  "s4" + temp;
 ```
 
-string对象字符处理：（cctype头文件）
+string对象字符处理，字符判断与字符转换：（cctype头文件）
 
 | 处理函数      | 解释                                                         |
 | ------------- | ------------------------------------------------------------ |
@@ -787,11 +800,106 @@ int main() {
 
 
 
-
-
 ## vector
 
+标准类型库vector：表示对象的集合，vector是一个类模板，编译器可以根据类模板实例化类。（vector也为称为容器）
 
+```c++
+#include <string>
+#include <cctype>
+#include <vector>
+using std::vector;
+using std::string;
+
+int main() {
+	vector<int> ivec;
+	//vector<Sales_item> Sales_vec;
+	vector<vector<string>> file;
+	vector<vector<string> > files;   //  老式编译器中的定义形式，定义vector类型元素需要加上一个空格
+	return 0;
+}
+```
+
+vector对象的定义和初始化：
+
+| 定义和初始化                     | 说明                                                         |
+| -------------------------------- | ------------------------------------------------------------ |
+| **`vector<T> v1;`**              | `v1`是一个空`vector`，它潜在的元素是`T`类型的，执行默认初始化不包含任何元素 |
+| `vector<T> v2(v1);`              | `v2`中包含有`v1`所有元素的副本                               |
+| **`vector<T> v2 = v1;`**         | 等价于`v2(v1)`，`v2`中包含`v1`所有元素的副本                 |
+| `vector<T> v3(n, val);`          | `v3`包含了n个重复的元素，每个元素的值都是`val`               |
+| `vector<T> v4(n);`               | `v4`包含了n个重复地执行了值初始化的对象                      |
+| `vector<T> v5{a, b, c...};`      | `v5`包含了初始值个数的元素，每个元素被赋予相应的初始值       |
+| **`vector<T> v5={a, b, c...};`** | 等价于`v5{a, b, c...}`                                       |
+
+```c++
+vector<int> ivec;          // 空
+vector<int> ivec2(ivec);   //  拷贝赋值
+vector<int> ivec3 = ivec;  //  拷贝赋值
+/* 列表初始化 */
+vector<string> articles = {"a", "an", "the"};
+vector<string> articles{"a", "an", "the"};
+/* 创建指定数量元素 */
+vector<int> ivec(10,-1);      
+vector<string> svec(10,"hi");
+vector<int> ivec(10);      // 10个元素，都为0
+vector<string> svec(10);   // 10个元素，都为空字符串
+
+vector<string> articles{10, "hi"};   //  特殊情况：10不能用来列表初始化，此时表示有10个hi
+vector<string> articles{10};         //  特殊情况：10不能用来列表初始化，此时表示有10个默认初始化的元素
+```
+
+元素的添加：
+
+```c++
+vector<int> v2;
+v2.push_back(xxx);   //  将值插入到集合末尾
+```
+
+限制一：不能在范围for循环中向vector对象添加元素。（如何理解）
+
+限制二：任何能改变vector对象容量的操作都会使该vector对象的迭代器失效。（因为可能会导致已分配给vector对象的内存不足，那就会触发内存重新分配，那样就必定导致迭代器失效，因此会有此限制避免程序出现问题）
+
+vector集合的其他操作：
+
+| 操作                  | 说明                                                         |
+| --------------------- | ------------------------------------------------------------ |
+| `v.emtpy()`           | 如果`v`不含有任何元素，返回真；否则返回假                    |
+| `v.size()`            | 返回`v`中元素的个数，类型为`vector<T>::size_type`            |
+| `v.push_back(t)`      | 向`v`的尾端添加一个值为`t`的元素                             |
+| `v[n]`                | 返回`v`中第`n`个位置上元素的**引用**                         |
+| `v1 = v2`             | 用`v2`中的元素拷贝替换`v1`中的元素（擦除原来的再赋值）       |
+| `v1 = {a,b,c...}`     | 用列表中元素的拷贝替换`v1`中的元素（擦除原来的再赋值）       |
+| `v1 == v2`            | `v1`和`v2`相等当且仅当它们的元素数量相同且对应位置的元素值都相同 |
+| `v1 != v2`            | 同上                                                         |
+| `<`、`<=`、`>`、 `>=` | 以字典顺序进行比较                                           |
+
+示例：
+
+```c++
+#include <string>
+#include <cctype>
+#include <vector>
+using std::vector;
+using std::string;
+using std::cout;
+using std::cin;
+using std::endl;
+
+int main() {
+	vector<unsigned> scores(11,0);
+	unsigned grade;
+	while (cin >> grade) {    //   12 13 14 15 15，循环读取到每一个空格前的数据，遇到\n结束循环
+		if (grade <= 100) {
+			++scores[grade / 10];
+		}
+	}
+	for (int i = 0; i < scores.size();i++) {
+		cout << scores[i] << " " << endl;
+	}
+	return 0;
+}
+```
 
 
 
@@ -799,7 +907,84 @@ int main() {
 
 ## 迭代器
 
+标准库容器都可以使用迭代器，string对象不属于容器类型但也可以使用迭代器。类似于指针类型，迭代器也提供了对对象的间接访问。
 
+获取迭代器：
+
+1. `对象.begin()`：返回指向第一个元素（或字符）的迭代器。
+2. `对象.end()`：返回指向最后一个元素的下一个位置的迭代器（也称为尾后迭代器）。当容器为空则begin()和end()返回的迭代器是同一个迭代器。
+
+迭代器运算符：
+
+| 运算符                             | 解释                                                 |
+| ---------------------------------- | ---------------------------------------------------- |
+| `*iter`                            | 返回迭代器`iter`所指向的**元素的引用**               |
+| `iter->mem`                        | 解引用并获取该元素名为mem的成员，等价于`(*iter).mem` |
+| `++iter`                           | 令`iter`指向下一个元素                               |
+| `--iter`                           | 令`iter`指向上一个元素                               |
+| `iter1 == iter2`、`iter1 != iter2` | 判断两个迭代器是否相等                               |
+
+迭代器使用示例：
+
+```c++
+#include <iostream>
+#include <string>
+using std::string;
+int main() {
+    /* 使用迭代器将字符串的首字母转为大写 */
+	string s = "hello world";
+	if (s.begin() != s.end()) {
+		auto iterator = s.begin();
+		*iterator = toupper(*iterator);   // 使用*解引用，获取值
+	}
+	std::cout << s << std::endl;
+    /* 将字符串的首个单词转为大写形式 */
+	for (auto iter = s.begin(); s.begin() != s.end() && !isspace(*iter); ++iter) {
+		*iter = toupper(*iter);
+	}
+	std::cout << s << std::endl;
+}
+```
+
+关于迭代器的类型：可使用迭代器的标准库中，迭代器的类型一般使用iterator和const_iterator来表示。示例：
+
+```c++
+#include <iostream>
+#include <string>
+#include <vector>
+using std::vector;
+using std::string;
+
+int main() {
+	
+	string s = "hello world";
+	vector<int> ivec{6,3,4,5,7,8,9};
+    // iterator型
+	string::iterator iter1 = s.begin();
+	vector<int>::iterator iter2 = ivec.begin();
+    // const_iterator型
+	string::const_iterator iter3 = s.begin();
+	vector<int>::const_iterator iter4 = ivec.begin();
+
+	std::cout << *iter1 << *iter2 << std::endl;
+	std::cout << *iter3 << *iter4 << std::endl;
+	return 0;
+}
+```
+
+1. 如果string、vector的对象是const常量，那只能使用const_iterator来对对象进行操作。
+2. 如果string、vector的对象不是const常量，那么iterator、const_iterator这两种类型的迭代器都可以使用。
+3. 对象是const常量，那么begin()返回的就是带const的那个迭代器，否则就是返回iterator迭代器；end()同理。
+
+**C++11：cbegin()、cend()函数——无论对象是否是常量，都返回const_iterator类型的迭代器。**
+
+**注意：凡是使用迭代器的循环体，都不要向迭代器所属容器中添加元素。**
+
+vector和string的迭代器支持的运算：
+
+1. 和整数的运算：iter+ n或iter - n、iter += n、iter -= n，表示向前或向后移动多少个位置。
+2. 迭代器之间的运算：iter1 - iter2，表示它们之间的距离，整数。
+3. 迭代器大小比较：>、<、>=、<=。
 
 
 
@@ -807,7 +992,163 @@ int main() {
 
 ## 数组
 
+### 定义
 
+数组大小固定，数组元素不能随意增加。
+
+数组的定义：
+
+1. 定义数组时，维度必须为常量表达式 。
+2. 必须指定数组类型，不能使用auto等定义数组。
+3. 数组元素为对象，因此不存在引用的数组（引用不是对象）。
+
+```c++
+int arr[10];   // 定义并初始化了一个容量为10的数组，默认初始化
+
+unsigned cnt = 12;
+int arr[cnt];  //  错误，数组的维度必须是一个常量表达式
+
+constexpr unsigned ct = 12;   //  常量表达式
+intarr[ct];    // 正确
+string[get_size()]; //  get_size()为constexpr才正确
+```
+
+数组的初始化：
+
+```c++
+/* 定义并初始化，如果不初始化则是默认初始化 */
+int arr1[3] = {1,2,3};
+int arr2[] = {1,2,3};
+int arr3[5] = {1,2,3};   // 相当于{1,2,3,0,0}
+int arr4[3] = {};   // 全部初始化为0
+```
+
+字符数组注意事项：当使用字符串字面值初始化char数组时，要保证数组中有位置放置字符串末尾的一个空字符。
+
+```c++
+char a[6] = "TeShuX";   // 报错：数组界限溢出；没有位置放置字符串末尾的一个空字符
+```
+
+复杂数组声明：
+
+```c++
+/* 定义存放指针的数组 */ 
+int* pstr[10];  // 存放十个整型指针的数组
+```
+
+```c++
+/* 定义数组的指针 */
+int arr[3] = {3,6,9};
+int (*Parry)[3] = &arr;   // Parry为数组arr的指针
+std::cout << *Parry[0] << std::endl;   // 输出3
+```
+
+```c++
+/* 定义数组的引用 */
+int arr[3] = {3,6,9};
+int (&arrRef)[3] = arr;   // arrRef为数组arr的引用
+std::cout << arrRef[0] << std::endl;   // 输出3
+```
+
+理解复杂数组声明的含义的技巧——从数组的名字开始由内向外解读。例子：
+
+```c++
+int* ptrs[10];
+int *(&array)[10] = ptrs;
+/* 一：array是引用 
+   二：array引用的对象是大小为10的数组
+   三：引用的数组的类型是 int*——整形指针
+   四：引用的对象是——ptrs
+*/
+/* 示例： */
+int a = 3;
+int* ptrs[1]{&a};
+int* (&array)[1] = ptrs;
+std::cout << *array[0] << std::endl;   
+```
+
+### 访问
+
+1. 数组下标的类型：通常将数组下标定义为`size_t`类型，该类型在cstddef头文件中被定义（c标准库的c++版本） 。
+2. 字符数组的特殊性：结尾处有一个空字符，如 `char a[] = "hello";`，这个数组长度为6 。
+3. 用数组初始化 `vector`： `int a[] = {1,2,3,4,5}; vector<int> v(begin(a), end(a));` 。
+
+```c++
+#include <cstddef>
+
+constexpr size_t array_size = 10;
+int arr[array_size];
+```
+
+范围for循环：
+
+```c++
+for(xxx xx : xx){
+    
+}
+```
+
+### 指针和数组
+
+```c++
+int arr[3] = {3,6,9};
+int* p = &arr[0];  // 指向数组的第一个元素
+int* p = arr;      // 也是指向数组的第一个元素，和上面等价
+auto arr2(arr);    // auto arr2(&arr[0])，推断arr2为int*
+decltype(arr) arr2; // 根据arr推断arr2为int [3]
+```
+
+string和vector的迭代器支持的运算，数组的指针都支持，能像使用迭代器遍历vector一样，使用指针也可以遍历数组。
+
+```c++
+int arr[3] = { 3,6,9 };
+int* p = &arr[0];  
+++p;   // 指向arr[1]
+std::cout << *p; 
+int* p2 = &arr[10];  // 获得尾元素下一位置的指针，不能解引用和递增
+```
+
+```c++
+/* C++11：可通过begin(数组)、end(数组)获取数组的首元素指针、尾元素下一位置的指针 */
+/* begin()和end()函数定义在iterator头文件 */
+int arr[3]{3,6,9};
+int* beg = std::begin(arr);
+int* last = std::end(arr);
+```
+
+指针的解引用、递增、比较、与整数相加、两个指针相减等，和迭代器的效果差不多。
+
+```c++
+int arr[3]{3,6,9};
+int* beg = std::begin(arr);
+int* last = std::end(arr);
+
+constexpr size_t sz = 5;
+int* p = arr + sz;  // 错误，arr[0]的指针加上sz，指针超出范围将会出错
+```
+
+- 两指针相减的结果为 ptrdiff_t 的标准库类型，在cstddef 头文件中定义，是一种带符号的类型。
+- 指针指向不同的对象，比较则无意义。
+- 空指针可以加上或减去值为0的常量表达式，两个空指针相减结果也为0。
+
+解引用和指针运算的交互：
+
+```c++
+int ia[]{3,6,9};
+int last = *(ia + 2); // 结果为last=9；ia相当于&ia[0]，加上2就是&ia[2]，再解引用就是ia[2]的值
+int last2 = *ia + 2;  // 结果为last2=5；此时等价于 ia[0] + 2
+```
+
+数组下标和指针：数组的下标是有符号的，可以处理负值（内置的下标运算符所用索引值不是无符号的）
+
+```c++
+int ia[]{3,6,9};
+int i = ia[1];    // 相当于*(ia+1)
+int* p = &ia[2];
+int k = p[-2];    // 相当于 k=*(p-2)，k=ia[0]
+```
+
+ **尽量使用vector和迭代器，少用内置数组、指针。**
 
 
 
@@ -815,7 +1156,83 @@ int main() {
 
 ## 多维数组
 
+实际是数组的数组。
 
+```c++
+int arr[3][3]= {{1,2,3},{1,2,3},{1,2,3}};
+int arr[3][3]= {1,2,3,1,2,3,1,2,3};  // 与上面等价
+
+int arr[3][3]= {{0},{1},{2}};   // 初始化每一行的首元素 
+int arr[3][3]= {0,1,2};       // 初始化第一行的全部元素，其他的默认初始化
+```
+
+多维数组的处理：
+
+```c++
+constexpr size_t rowCnt = 3, colCnt = 3;
+int arr[rowCnt][colCnt];
+for(size_t i = 0; i != rowCnt; ++i){
+    for(size_t j = 0; j != colCnt; ++j){
+        // 初始化二维数组
+		arr[i][j] = i * colCnt + j;
+    }
+}
+// 最终结果：
+0 1 2
+
+3 4 5
+
+6 7 8
+```
+
+```c++
+/* 使用范围for循环，最终结果和上面一样 */
+size_t cnt = 0;
+int arr[3][3];
+for(auto &row : arr){
+    for(auto &col : row){
+        col = cnt;
+        ++cnt;
+    }
+}
+// 上面使用引用是为了避免数组形式的元素转为指针
+for(auto row : arr)  // 不使用引用，则row会自动编译为指向其数组的首元素的指针
+    for(auto col : row) // 这里可不使用引用
+```
+
+指针和多维数组：
+
+当使用多维数组名字是，会自动转换为指向数组首元素的指针。
+
+```c++
+int arr[3][3];
+int (*p)[3] = arr;  // 数组的指针，p指向含有三个元素的数组
+p = &arr[2];   // p指向二维数组的最后一个数组
+```
+
+多维数组是数组中存储数组，指针和数组的内容和一维数组差不多。
+
+# 表达式
+
+## 基本概念
+
+表达式：表达式由一个或多个运算对象组成，对表达式求值将得到一个结果，比如：字面值和变量。
+
+一元运算符：作用于一个运算对象，比如取地址符&和解引用符。
+
+二元运算符：作用于两个运算对象，比如==、*。
+
+三元运算符：作用于三个运算对象。
+
+函数调用也是特殊的运算符，对对象数量没有限制。
+
+左值和右值：当一个对象被用作右值的时候，用的是对象的值（内容）；当一个对象被用作左值的时候，用的是对象的身份（在内存中的位置）。
+
+（左值取址(地址)，右值取值(数值)。简单深刻又容易记忆。只要能取得地址的东西，就可以做为左值被赋值。如果编译器报左值错误之类的，先查看它是不是能取地址，问题就差不多能找出来了。）
+
+优先级：使用括号将无视优先级和结合律。
+
+求值顺序：有些表达式行为不可预知，有四种运算符明确规定了求值顺序，那就是&&、||、三元运算符、以及逗号运算符。求值顺序和优先级、结合律无关。
 
 
 
