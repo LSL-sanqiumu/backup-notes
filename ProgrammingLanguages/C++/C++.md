@@ -46,7 +46,7 @@ int main()
 
 
 
-# C++基础 start
+# ------C++基础 
 
 # 变量与数据类型
 
@@ -621,6 +621,10 @@ struct Sales_data {
 	double revenue = 0;
 };
 #endif
+```
+
+```c++
+#include "sales_data.h"   // 引入自定义的头文件
 ```
 
 注意事项：
@@ -1448,20 +1452,446 @@ cout << result << endl;   // 3
 
 
 
+# 语句
 
+空语句、语句作用域、if-else。
 
+switch语句：
 
+1. 可接受的表达式——整型或枚举类型，或者是一个 class 类型（需要 class 有一个单一的转换函数将其转换为整型或枚举类型）。
+2. case后的表达式需要与switch 中的变量具有相同的数据类型，且必须是一个常量或字面量。
 
-# 标准库 start
-
-
-
+```c++
+switch(expression){
+    case constant-expression  :
+       statement(s);
+       break; // 可选的
+    case constant-expression  :
+       statement(s);
+       break; // 可选的
   
+    // 前面都匹配不上就执行的
+    default : // 可选的
+       statement(s);
+}
+```
+
+迭代语句：
+
+- **while**：当不确定到底要迭代多少次时，使用 `while`循环比较合适，比如读取输入的内容。
+- **for**： `for`语句可以省略掉 `init-statement`， `condition`和 `expression`的任何一个；**甚至全部**。
+- **范围for**： `for (declaration: expression) statement`
+
+跳转语句：
+
+- **break**：`break`语句负责终止离它最近的`while`、`do while`、`for`或者`switch`语句，并从这些语句之后的第一条语句开始继续执行。
+- **continue**：终止最近的循环中的当前迭代并立即开始下一次迭代。只能在`while`、`do while`、`for`循环的内部。
+
+goto语句，不要在程序中使用，会使程序变得难理解。
+
+try语句和异常处理：（Java中也差不多是这样）
+
+- **throw表达式**：异常检测部分使用 `throw`表达式来表示它遇到了无法处理的问题。我们说 `throw`引发 `raise`了异常。
+- **try语句块**：以 `try`关键词开始，以一个或多个 `catch`字句结束。 `try`语句块中的代码抛出的异常通常会被某个 `catch`捕获并处理。 `catch`子句也被称为**异常处理代码**。
+- **异常类**：用于在 `throw`表达式和相关的 `catch`子句之间传递异常的具体信息。
+
+![](img/4.exception.png)
+
+```c++
+#include <exception>
+#include <stdexcept>
+#include <new>
+#include <typeinfo>
+
+char a;
+int main() {
+	int a = 13;
+	int b = 4.0;
+	double result = a / b;
+	cout << result << endl;
+	throw std::runtime_error("运行时错误");
+	return 0;
+}
+```
+
+
+
+# 函数
+
+## 函数基础
+
+函数定义和调用：
+
+```c++
+// 函数定义：返回类型、函数名和0个或者多个**形参**（parameter）组成的列表、函数体。
+int fact(int val) {
+    val = val + 9;
+    return val;
+}
+// 函数调用：()为调用运算符，作用于函数或者函数的指针；该调用表达式的类型为函数返回类型
+int result= fact(9);
+```
+
+函数调用时的工作：
+
+1. 实参初始化函数形参。
+2. 执行控制权转移到所调用的函数。（return语句的作用就是返回值并将执行权移回主调函数）
+
+主调函数：程序入口。被调函数：程序中被调用的函数，在主调函数中被调用。调用被调函数时，主函数执行被暂时中断，被调函数执行。
+
+无参函数的两种方式：
+
+```c++
+int fact(){}
+int fact(void){}
+```
+
+局部对象：
+
+- **生命周期**：对象的生命周期是程序执行过程中该对象存在的一段时间。
+- **局部变量**（local variable）：形参和函数体内部定义的变量统称为局部变量。它对函数而言是局部的，对函数外部而言是**隐藏**的。
+- **自动对象**：只存在于块执行期间的对象。当块的执行结束后，它的值就变成**未定义**的了。（例如形参就是一种局部对象）
+- **局部静态对象**： `static`类型的局部变量，生命周期贯穿函数调用前后，程序终止才会被销毁。
+
+```c++
+size_t count_calls() {
+	static size_t ctr = 0;   // 调用结束后ctr仍然有效，第二次调用时ctr初始是1再++
+    return ++ctr;
+}
+```
+
+函数声明（函数原型）：函数名字在使用之前必须先被声明；与建议变量在头文件中声明在源文件中定义一样，函数也建议在头文件中声明而在源文件中定义（注意，含有函数声明的头文件应该被包含到函数定义的源文件中）。
+
+```c++
+void print(vector<int>::const_iterator beg, vector<int>::const_iterator end);   // 函数声明
+```
+
+分离式编译：允许将程序分割到不同的文件，每个文件单独编译。
+
+```c++
+/* Chap6.h 头文件 */
+#pragma once
+void Log(const char* message);   // 声明
+```
+
+```c++
+/* Log.cpp */
+#include <iostream>
+void Log(const char* message)
+{
+	std::cout << message << std::endl;
+}
+```
+
+```c++
+//Main.cpp
+#include <iostream>
+#include "Chap6.h"   // 引入头文件
+using std::cout;
+using std::endl;
+int main() {
+	Log("Hello World");
+	return 0;
+}
+```
+
+
+
+## 参数传递
+
+参数传递机制：
+
+1. 形参是引用类型：对应的实参被引用传递或函数被传引用调用，此时引用形参是对应的实参的别名。
+2. 形参是非引用类型：值拷贝传递。（基本数据类型、指针等都是值的拷贝，不能在函数内通过形参影响实参）
+
+引用类型参数传入：
+
+- 拷贝某些类类型对象或者容器对象比较低效，可考虑使用引用避免拷贝。
+- 如果函数无需改变引用形参的值，最后将其声明为常量引用。
+- 使用引用形参可以用于**返回额外的信息**。
+- 经常用引用形参来避免不必要的复制。
+- 尽量使用常量引用形参。
+
+const形参和实参：非常量可以转为常量，常量不能转为非常量。指针、引用和const：const的使用规则。
+
+数组形参：
+
+1. 数组的特性：不允许拷贝数组，使用数组时会将其转换成指针。
+2. 数组的形参：因为不允许拷贝数组，所以无法以值传递的方式传递数组；因为使用数组时会将其转换成指针，所以实际传递的是指向数组的首元素的指针。
+
+```c++
+/* 三种等价声明，传入参数都是const int*类型的 */
+void print(const int*);
+void print(const int[]);
+void print(const int[10]);   //  期望传入的数组的维度，而不是传入的必须10个长度
+```
+
+数组实参操作：传入数组的首、尾迭代器；传入数组和数组的大小。
+
+数组引用形参：传入数组的引用。
+
+多维数组形参：
+
+```c++
+void print(int (*matrix)[10], int rowSize){}
+void print(int matrix[][10], int rowSize){}
+```
+
+可变形参：（有两种，一种是传入的类型都相同的可变形参；另一种是传入的类型不同的）
+
+如果传入的类型都一样，那可以使用`initializer_list`提供的操作（`C++11`）：
+
+| 操作                                 | 解释                                                         |
+| ------------------------------------ | ------------------------------------------------------------ |
+| `initializer_list<T> lst;`           | 默认初始化；`T`类型元素的空列表                              |
+| `initializer_list<T> lst{a,b,c...};` | `lst`的元素数量和初始值一样多；`lst`的元素是对应初始值的副本；列表中的元素是`const`。 |
+| `lst2(lst)`                          | 拷贝或赋值一个`initializer_list`对象不会拷贝列表中的元素；拷贝后，原始列表和副本共享元素。 |
+| `lst2 = lst`                         | 同上                                                         |
+| `lst.size()`                         | 列表中的元素数量                                             |
+| `lst.begin()`                        | 返回指向`lst`中首元素的指针                                  |
+| `lst.end()`                          | 返回指向`lst`中微元素下一位置的指针                          |
+
+- 所有实参类型相同，可以使用 `initializer_list`的标准库类型。
+- 实参类型不同，可以使用`可变参数模板`。
+- 省略形参符： `...`，便于`C++`访问某些C代码，这些C代码使用了 `varargs`的C标准功能。
+
+```c++
+// 示例
+#include <iostream>
+#include <initializer_list>
+using std::string;
+using std::cout;
+using std::endl;
+
+void show(std::initializer_list<string> lst) {
+	for (auto beg = lst.begin(); beg != lst.end(); ++beg) {
+		cout << *beg << " ";
+	}
+	cout << endl;
+}
+int main()
+{
+	show({ "ABC" , "DDD"});
+	return 0;
+}
+```
+
+
+
+
+
+## 返回值
+
+无返回值的函数：没有返回值的 `return`语句只能用在返回类型是 `void`的函数中，返回 `void`的函数不要求非得有 `return`语句。
+
+有返回值的函数：
+
+- `return`语句的返回值的类型必须和函数的返回类型相同，或者能够**隐式地**转换成函数的返回类型。
+- 值的返回：返回的值用于初始化调用点的一个**临时量**，该临时量就是函数调用的结果。
+- **不要返回局部对象的引用或指针**。
+- **引用返回左值**：函数的返回类型决定函数调用是否是左值。调用一个返回引用的函数得到左值；其他返回类型得到右值。
+- **列表初始化返回值**：函数可以返回花括号包围的值的列表。（`C++11`）
+- **主函数main的返回值**：如果结尾没有`return`，编译器将隐式地插入一条返回0的`return`语句。返回0代表执行成功。
+
+返回数组指针：
+
+- `Type (*function (parameter_list))[dimension]`
+- 使用类型别名： `typedef int arrT[10];` 或者 `using arrT = int[10;]`，然后 `arrT* func() {...}`
+- 使用 `decltype`： `decltype(odd) *arrPtr(int i) {...}`
+- **尾置返回类型**： 在形参列表后面以一个`->`开始：`auto func(int i) -> int(*)[10]`（`C++11`）
+
+
+
+## 函数重载
+
+重载函数：同一作用域下函数名相同但形参列表不同（形参的类型、名字、顺序，有一个不同即可）。
+
+1. **重载和const形参**：
+   - 一个有顶层const的形参和没有它的函数无法区分。 `Record lookup(Phone* const)`和 `Record lookup(Phone*)`无法区分。
+   - 相反，是否有某个底层const形参可以区分。 `Record lookup(Account*)`和 `Record lookup(const Account*)`可以区分。
+2. **重载和作用域**：若在内层作用域中声明名字，它将隐藏外层作用域中声明的同名实体，在不同的作用域中无法重载函数名。
+3. `main`函数不能重载。
+4. 建议：只重载一些操作非常相似的函数。
+
+
+
+## 特殊用途语言特性
+
+C++中，名字查找发生在类型检查前。
+
+**默认实参：**一旦某个形参被赋予了默认值，那么它之后的形参都必须要有默认值。
+
+```c++
+typedef string::size_type sz;
+string screen(sz ht = 24, sz wid = 80, char backgrnd = ' ');
+
+string window;
+window = screen();
+window = screen(66);
+window = screen(66, 256);
+window = screen(66, 256,'#');
+```
+
+**内联（inline）函数：**
+
+1. 普通函数的缺点：调用函数比求解等价表达式要慢得多。
+2. `inline`函数可以避免函数调用的开销，可以让编译器在编译时**内联地展开**该函数。
+3. `inline`函数应该在头文件中定义。
+
+```c++
+// 声明内联函数
+inline int sum(int x, int y);
+```
+
+
+
+**constexpr函数：**指能用于常量表达式的函数。（会被隐式地指定为内联函数）。要遵守的约定：
+
+1. 函数的返回类型及所有形参类型都要是字面值类型。
+2. 函数体中必须有且只有一条return语句。
+3. 函数体内可包含一些在执行时不执行任何操作的语句，例如空语句、类型别名、using声明。
+
+```c++
+constexpr int new_sz() {
+    return 42;   //  返回值不一定要求是返回常量
+}
+constexpr int foo = new_sz(); // 正确
+```
+
+`constexpr`函数应该在头文件中定义。
+
+**调试帮助：**assert和NDEBUG的使用。
+
+assert，预处理宏：assert宏 定义在cassert头文件中。
+
+```c++
+assert(表达式);   //  表达式为假，assert输出信息并终止程序；为真则什么都不做
+
+#include <cassert>
+string a = "adf";
+assert(a.size() < 4);
+```
+
+NDEBUG是一个预处理变量，默认情况下没有定义该预处理变量，如果定义了该变量，那么assert将会什么都不做。
+
+```c
+// 使用#define定义
+#define NDEBUG
+// 使用命令行命令定义，相当于在main.c文件中一开始写上 #define NDEBUG
+CC -D NDEBUG main.C # use /D with the Microsoft complimer
+```
+
+## 函数匹配
+
+重载函数匹配的**三个步骤**：
+
+1. 选出**候选函数**：选定本次调用函数对应的重载函数集，集合中的函数称为候选函数（candidate function）。
+2. 选出**可行函数**：考察本次调用提供的实参，选出可以被这组实参调用的函数，新选出的函数称为可行函数（viable function）。
+3. **寻找最佳匹配**：基本思想——实参类型和形参类型越接近，它们匹配地越好。
+
+## 函数指针
+
+函数类型：由函数的返回值类型和形参列表共同决定。
+
+```c++
+int sum(int,int);   // 该函数的类型是int(int,int)
+// 声明可以指向该函数的指针：用指针替代函数名即可
+int (*pf)(int, int);    // 没有初始化的一个可指向函数的指针
+```
+
+函数指针，指向的是函数而不是对象，指针类型必须要和函数中某一个函数精确匹配上。
+
+函数指针的使用：把函数名作为一个值使用，该函数名自动转为指针。
+
+```c++
+/* 下面两个等价：pf指向名为sum的函数 */
+pf = sum;
+pf = &sum;
+/* 通过函数指针调用函数 */
+int r1 = pf(9,9);
+int r2 = (*pf)(9,9);
+```
+
+函数指针可以作为函数的形参：
+
+```c++
+int sum(int x, int y) {
+    return x+y;
+}
+int (*p)(int x, int y) = sum;
+// 函数类型形参，会自动转换成指向函数的指针
+void useSum(int pf(int x, int y)){
+    
+}
+// 等价声明
+void useSum(int (*pf)(int x, int y)){
+    
+}
+useSum(sum);  // 函数作为实参，会转化为指向该函数的指针
+```
+
+使用类型别名或decltype简化：（先略过）
+
+```c++
+typedef int Func1(int x, int y);   // Func1是函数类型
+typedef decltype(sum) Func2;       // Func2是函数类型
+
+typedef int (*Func1P)(int x, int y);   // Func1P是能指向函数的指针
+typedef decltype(sum) *Func2P;         // Func2P是能指向函数的指针
+```
+
+返回函数的指针：1.类型别名；2.尾置返回类型。
 
 
 
 # 类
 
+类思想：数据抽象和封装。数据抽象是一种依赖于**接口**（interface）和**实现**（implementation）分离的编程技术。
+
+## 类成员
+
+1. 必须在类的内部声明，不能在其他地方增加成员。
+2. 成员可以是数据，函数，类型别名。
+
+
+
+
+
+## 访问控制与封装
+
+
+
+
+
+## 类其他特性
+
+
+
+## 类的作用域
+
+
+
+
+
+## 构造函数补充
+
+
+
+## 静态成员
+
+
+
+# ------标准库 
+
+# IO库
+
+  
+
+
+
+# ------类设计工具
+
+# 拷贝控制
 
 
 
@@ -1469,10 +1899,9 @@ cout << result << endl;   // 3
 
 
 
+# ------工具与技术
 
-# 工具与技术
-
-
+# 标准库特殊实施
 
 
 
