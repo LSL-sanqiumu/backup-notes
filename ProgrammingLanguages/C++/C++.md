@@ -1743,7 +1743,7 @@ window = screen(66, 256,'#');
 inline int sum(int x, int y);
 ```
 
-
+定义在类内部的函数是隐式的inline函数。
 
 **constexpr函数：**指能用于常量表达式的函数。（会被隐式地指定为内联函数）。要遵守的约定：
 
@@ -1853,11 +1853,207 @@ typedef decltype(sum) *Func2P;         // Func2P是能指向函数的指针
 1. 必须在类的内部声明，不能在其他地方增加成员。
 2. 成员可以是数据，函数，类型别名。
 
+```c++
+/* 定义一个类 */
+struct 类名 {
+    // 数据成员、函数成员等
+}[结构体变量，可选];
+struct Books {
+    // 数据成员、函数成员等
+}book;   // book为结构体的一个变量
+```
+
+### **类的成员函数：**
+
+1. 声明和定义：成员函数的**声明必须在类的内部**，但是成员函数的**定义既可以在类的内部也可以在外部**。
+2. 调用：使用点运算符 `.` 调用成员函数。
+3. 定义在类内部的函数是隐式的inline函数。
+4. 必须对任何`const`或引用类型成员以及没有默认构造函数的类类型的任何成员使用初始化式。
+
+```c++
+#include <iostream>
+using std::cout;
+using std::endl;
+
+struct Student {
+	void sleeps();   // 声明类的成员函数，定义可在类外部
+	void talk() {
+		cout << "我话超多！" << endl;
+	}
+	unsigned int age = 0;
+};
+void Student::sleeps() {
+	cout << "哎，睡懒觉就是好" << endl;
+}
+int main()
+{	
+	Student s;
+	s.talk();
+	s.sleeps();
+	return 0;
+}
+```
+
+关于`this`：每个成员函数都有一个额外的，隐含的形参`this`，`this`总是指向当前对象，因此`this`是一个常量指针。
+
+### **const成员函数：**
+
+成员函数形参表后面加上`const`，作用是修改隐含的`this`指针的类型，如 `std::string isbn() const {return bookNo;};`，这种函数称为“常量成员函数”（`this`指向的当前对象是常量）（加上const表示this是一个指向常量的指针）。
+
+（补充：默认情况下，this的类型是类类型非常量版本的常量指针（例如上面的Student的非const成员函数中，this的类型将会是 `Student *const`），this也就不能绑定到一个常量对象上，也就是说不能在一个常量对象上调用普通的成员函数。但加了const后，this就是一个指向常量的指针）
+
+### 返回this对象的函数：
+
+```c++
+#include <iostream>
+using std::cout;
+using std::endl;
+
+struct Student {
+	Student& combine();
+	void talk() {
+		cout << "我话超多！" << endl;
+	}
+	unsigned int age = 0;
+};
+Student& Student::combine() {
+	return *this;   //  解引用this，获得指向该函数的对象，返回s的引用
+}
+int main()
+{	
+	Student s;
+	s.combine().talk();   // `return *this;`可以让成员函数连续调用。
+	return 0;
+}
+```
+
+### **构造函数：**
+
+构造函数——用于对象初始化的函数。关于构造函数：
+
+1. 构造函数名的函数名与类名一致，构造函数的形参列表为0~n个。
+2. 无返回值、可重载。
+3. 不能被声明为const。
+4. 当没有显式定义构造函数，编译器才会为类定义一个默认的无参构造函数，这个构造函数的初始化规则为：
+   - 类内的数据成员存在初始值，则用默认值初始化数据成员。
+   - 否则，执行默认初始化。
+
+```c++
+#include <iostream>
+using std::cout;
+using std::endl;
+
+struct Student {
+	// 定义构造函数
+	Student() = default;   // 默认的无参构造函数
+    Student(std::string s) : name(s) {}
+	Student(unsigned int a,std::string s) : age(a), name(s) {}
+	unsigned int age = 12;
+	std::string name;
+};
+int main()
+{	
+	Student s;
+	cout << s.age << endl;
+	Student* s2 = new Student(33,"耸耸肩");
+	cout << (*s2).name << endl;
+	delete s2;
+	return 0;
+}
+```
+
+上面的只有一个参数的构造函数，等价写法为：（参数不全的都可按这规则写）
+
+```c++
+Student(std::string s) : age(0), name(s) {}
+Student(std::string s) : name(s), age(0) {}
+```
+
+类外部定义的构造函数：
+
+
+
+### 拷贝、赋值、析构：
+
+除了定义类如何初始化，类还需要控制拷贝、赋值、销毁对象时发生的行为。
+
+
+
 
 
 
 
 ## 访问控制与封装
+
+**访问说明符：**
+
+1. `public`：在整个程序内可被访问。
+2. `private`：只能被类的成员函数访问，不能被使用该类的代码使用。
+3. 一个类可以出现0到n个访问说明符。
+
+```c++
+#include <iostream>
+using std::cout;
+using std::endl;
+
+struct Student {
+public:
+	Student() = default;
+	Student(std::string s) : name(s), age(0) {}
+	Student(unsigned int a,std::string s) : age(a), name(s) {}
+	std::string name;
+	int show();
+private:
+	unsigned int age = 12;
+};
+int Student::show() {
+	return this->age;
+}
+int main()
+{	
+	Student s;
+	//cout << s.age << endl;  // 错误，age为private，只能被类的成员函数访问
+	Student* s2 = new Student("耸耸肩");
+	int age = s.show();
+	cout << age << endl;
+	cout << (*s2).name << endl; // 正确，name为public
+	delete s2;
+	return 0;
+}
+```
+
+**class与struct：**都可以用来定义类，唯一的区别是它们的默认访问权限不一样。
+
+类可以在它的第一个访问说明符之前定义成员，而使用class与struct定义类的区别就是在第一个访问说明符之前定义的成员的访问权限不同，使用struct——则这些成员的权限是public的；使用class——则这些成员的权限是private的。（没有使用访问说明符，那么：class——全部成员为private；struct——全部成员为public）
+
+出于统一风格考虑，定义类的所有成员是public的，就使用struct；反之，希望是private的，用class。
+
+```c++
+#include <iostream>
+using std::cout;
+using std::endl;
+
+class Student {
+	unsigned int age = 12;
+public:
+	Student() = default;
+	Student(std::string s) : name(s), age(0) {}
+	Student(unsigned int a,std::string s) : age(a), name(s) {}
+	
+	std::string name;
+};
+
+int main()
+{	
+	Student s;
+	cout << s.age << endl;  // 错误，class默认第一个访问说明符前的成员都为private
+	return 0;
+}
+```
+
+**友元：**friend关键字，允许其他类或函数访问它的非公有成员
+
+
 
 
 
