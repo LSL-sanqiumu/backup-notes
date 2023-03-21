@@ -2455,6 +2455,85 @@ int main()
 
 
 
+# ~~OpenCV安装~~
+
+Open CV和Visual Stdio2022
+
+官方：[Releases - OpenCV](https://opencv.org/releases/)
+
+安装与环境变量配置：
+
+1. Windows下下载.exe文件安装 。
+2. 安装完成配置环境变量（将`opencv\build\x64\vc15` 目录下的两个文件夹添加到环境变量Path）。
+
+配置visual stdio 2022（创建C++空项目并配置属性）：（本地配置方式）
+
+1. 创建C++空项目。
+
+2. 打开项目的属性管理器（如果视图中没看到，可在 视图 ===> 其他窗口 ===> 属性管理器找到）。
+
+3. 选择属性管理器（以Debug X64为例），在Debug X64那右键添加新项目属性表——属性表名称自定义。
+
+4. 双击打开创建的新项目属性表：（实际添加目录以opencv安装目录为准）
+
+   - 通用属性 ==> VC++ 目录 ==> 包含目录，添加`D:\AllEnvironment\opencv\build\include`和`D:\AllEnvironment\opencv\build\include\opencv2`。
+   - 通用属性 ==> VC++ 目录 ==> 库目录，添加`D:\AllEnvironment\opencv\build\x64\vc15\lib`。
+   - 通用属性 ==> 连接器 ===> 附加依赖项，添加`opencv_world460.lib`和`opencv_world460d.lib`。
+   - 退出项目，再重新进入项目。
+
+5. 创建cpp源文件测试：
+
+   ```c++
+   #include <iostream>
+   #include  <opencv2/highgui.hpp>
+   #include <opencv2/opencv.hpp>
+   
+   using namespace std;
+   using namespace cv;
+   /* 打开电脑摄像头 */
+   int main()
+   {
+   	VideoCapture cap(0);
+   	Mat frame;
+   	while (1) {
+   		cap >> frame;
+   		if (frame.empty())  break;
+   		imshow("Example", frame);
+   		waitKey(30);
+   	}
+   	return 0;
+   }
+   ```
+
+6. 复制一份那个项目属性表，保存到合适地方，新建项目时就可以通过添加现有属性表来完成配置了。
+
+`opencv_world460.lib`和`opencv_world460d.lib`的补充说明：带d的表示debug调试方法，不带d的表示realse调试方法，两者如果一同添加，会导致一些玄学问题，所以大家可以只加带d的，然后只用debug方法调试运行。两者如果一同添加的bug：
+
+```c++
+/* 网友说OpenCV 4.10版本下下面程序会出现三个窗口：一个cmd窗口，一个全灰色的小窗口，一个显示照片的窗口 */
+int main()
+{
+	// 读入一张图片（游戏原画）
+	Mat img = imread("D:\\hh\\pic.jpg");
+	// 创建一个名为 "游戏原画"窗口
+	namedWindow("picture1");
+	// 在窗口中显示游戏原画
+	imshow("picture1", img);
+	// 等待6000 ms后窗口自动关闭
+	waitKey(6000);
+}
+/* 经测试，OpenCV 4.60版本没有出现问题； */
+```
+
+其他资料：[Opencv4.60最新版本安装和下载指南 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/544467828)
+
+文档：
+
+- 第三方：[OpenCV官方文档_w3cschool](https://www.w3cschool.cn/opencv/#:~:text=OpenCV（开源计算机视觉库）是一个开源的BSD许可库，其中包含数百种计算机视觉算法。 该文档描述了所谓的OpenCV 2.x API，它本质上是一个C,%2B%2B API，与基于C的OpenCV 1.x API相反。)
+- 官方：[OpenCV: OpenCV modules](https://docs.opencv.org/4.x/)
+
+
+
 
 
 
