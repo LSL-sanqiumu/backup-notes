@@ -266,7 +266,7 @@ mysql -u root -p123456
 update mysql.user set authentication_string=password('123456') where user='root' and Host='localhost'; 
 # 刷新权限
 flush privileges; 
-# 显示数据库中所有表的信息
+# 显示数据库中某个表的信息
 describe xxx; 
 # 退出数据库管理系统
 exit;
@@ -644,6 +644,7 @@ show create table `table_name`; -- 查看创建表的语句
 describe `table_name`; -- 查看表的结构
 desc `table_name`; -- 查看表的结构
 
+show tables; -- 显示数据库中所有的表
 show status; -- 查看广泛的服务器状态信息
 show grants; -- 查看授予用户的安全权限
 show errors; -- 查看错误信息

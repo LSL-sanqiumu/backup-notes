@@ -32,7 +32,7 @@ docker三件套：
 
 1. 先在cmd窗口执行`ipconfig`，查看IP：如图是`192.168.56.1`，因此设置私有IP时也要以前三个开始。
 
-   ![](../AllMyProject/java_imgs/1.虚拟机IP.png)
+   ![](../../ProjectRecord/AllExerciseProjects/java_imgs/1.虚拟机IP.png)
 
 2. 打开Vagrantfile文件找到`config.vm.network "private_network", ip: "192.168.33.10"`，然后将后面的ip设置为`192.168.56.10`。
 
@@ -160,13 +160,26 @@ docker三件套：
 
 常用OPTIONS说明：
 
-- `--name="容器新名字"`：为容器指定一个名称；`-d`：后台运行容器并返回容器ID，也即启动守护式容器(后台运行)。
+- `--name="容器新名字"`：为容器指定一个名称。
 
-- `-i`：以交互模式运行容器，通常与 -t 同时使用；`-t`：为容器重新分配一个伪输入终端；通常与 -i 同时使用，也就是启动交互式容器（前台有伪终端，等待交互）。`docker run -it centos /bin/bash`：使用镜像`centos:latest`以交互模式启动一个容器，在容器内执行`/bin/bash`命令。
+- `-d`：后台运行容器并返回容器ID，也即启动守护式容器(后台运行)。
 
-- `-P`：随机端口映射；`-p`：指定端口映射。（设置宿主机端口与docker内容器暴露的端口以确定访问docker内哪个容器）
+- `-i`和`-t`：`-i` —— 以交互模式运行容器，通常与 -t 同时使用；`-t` —— 为容器重新分配一个伪输入终端，通常与 -i 同时使用，也就是启动交互式容器（前台有伪终端，等待交互）。
+  `docker run -it centos /bin/bash`：使用镜像`centos:latest`以交互模式启动一个容器，并在容器内执行`/bin/bash`命令。
 
+- `-P`和`-p`：`-P` —— 随机端口映射；`-p` —— 指定端口映射。
+  （用于在Docker的默认网络模式下，设置宿主机端口与docker内容器暴露的端口的映射，以确定访问docker内哪个容器）
+  
   ![](img/3.容器启动参数.png)
+  
+- `--net`：docker run创建Docker容器时，可以用 --net 选项指定容器的网络模式。
+
+  （`--net=host`：指定为host模式，此时容器不会虚拟自己的网卡、端口等信息，而是使用宿主机的IP和端口）
+  （`--net=container:容器名称或容器ID`：指定为container模式，此时容器和指定的一个容器共享一个网络空间，不会创建自己的网盘、不会配置自己的IP）
+
+  （`--net=none`：指定为none模式，容器会拥有自己的network namespace，但不会进行任何的网络配置，需要借助pipwork工具为容器指定ip信息等）
+
+  （`--net=bridge`：指定为bridge模式，这是docker默认的模式，会为每一个容器自动分配network namespace，默认容器将连接到一个虚拟网桥交换机上）
 
 交互式容器：以Ubuntu为例：`docker pull ubuntu`，然后`docker run ubuntu`，此时不会有该容器——Ubuntu系统的操作终端；而`docker run -it ubuntu /bin/bash`，此时就会以交互模式启动该容器并在该容器内执行一个`/bin/bash`指令，从而可以进入到一个终端用来操作该微小Ubuntu系统，如下图：
 
@@ -369,6 +382,10 @@ rootfs (root file system) ，在bootfs之上。包含的就是典型 Linux 系�
    docker run -it --privileged=true -v /mydocker/u:/tmp --name u1 ubuntu
    docker run -it --privileged=true --volumes-from u1 --name u2 ubuntu
    ```
+
+# Docker网络通信
+
+[docker --net详解_Docker网络通信_weixin_34608222的博客-CSDN博客](https://blog.csdn.net/weixin_34608222/article/details/113537311#:~:text=docker run创建Docker容器时，可以用 --net 选项指定容器的网络模式 ： host 模式：使用 --net,none 指定。 bridge 模式：使用 --net %3D bridge 指定，默认设置。)
 
 # 安装常用软件
 
